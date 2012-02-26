@@ -1,0 +1,8 @@
+# Properties in this file will be read when running in dev mode
+
+# mongodb config
+mongo.default.host=localhost
+mongo.default.port=27017
+mongo.default.name=avrilog
+#mongo.default.user
+#mongo.default.pwd
