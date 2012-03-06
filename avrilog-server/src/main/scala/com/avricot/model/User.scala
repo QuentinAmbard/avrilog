@@ -1,11 +1,11 @@
-package com.avricot.model 
+package com.avricot.model
 
 import org.bson.types.ObjectId
 import org.joda.time.DateTime
 
 import net.liftweb._
 import common._
-import http.{LiftResponse, RedirectResponse, Req, S, SessionVar}
+import http.{ LiftResponse, RedirectResponse, Req, S, SessionVar }
 import mongodb.record.field._
 import record.field._
 import util.FieldContainer
@@ -33,14 +33,13 @@ class User private () extends ProtoAuthUser[User] with ObjectIdPk[User] {
 
     override def validations =
       valMaxLen(64, "Name must be 64 characters or less") _ ::
-      super.validations
+        super.validations
   }
   object location extends StringField(this, 64) {
     override def displayName = "Location"
-
     override def validations =
       valMaxLen(64, "Location must be 64 characters or less") _ ::
-      super.validations
+        super.validations
   }
 
   /*
@@ -77,8 +76,7 @@ object User extends User with ProtoAuthUserMeta[User] with Loggable {
     x => logger.debug("User.onLogOut called."),
     boxedUser => boxedUser.foreach { u =>
       ExtSession.deleteExtCookie()
-    }
-  )
+    })
 
   /*
    * MongoAuth vars
@@ -139,8 +137,7 @@ object User extends User with ProtoAuthUserMeta[User] with Loggable {
       From(MongoAuth.systemFancyEmail),
       Subject("%s Password Help".format(siteName)),
       To(user.fancyEmail),
-      PlainMailBodyType(msgTxt)
-    )
+      PlainMailBodyType(msgTxt))
   }
 
   /*
@@ -156,21 +153,21 @@ object User extends User with ProtoAuthUserMeta[User] with Loggable {
   * Test for active ExtSession.
   */
   def testForExtSession: Box[Req] => Unit = {
-    ignoredReq => {
-      if (currentUserId.isEmpty) {
-        ExtSession.handleExtSession match {
-          case Full(es) => logUserInFromExtSession(es.userId.is)
-          case Failure(msg, _, _) =>
-            logger.warn("Error logging user in with ExtSession: %s".format(msg))
-          case Empty =>
+    ignoredReq =>
+      {
+        if (currentUserId.isEmpty) {
+          ExtSession.handleExtSession match {
+            case Full(es) => logUserInFromExtSession(es.userId.is)
+            case Failure(msg, _, _) =>
+              logger.warn("Error logging user in with ExtSession: %s".format(msg))
+            case Empty =>
+          }
         }
       }
-    }
   }
 
   // used during login process
   object loginCredentials extends SessionVar[LoginCredentials](LoginCredentials(""))
-
   def createUserFromCredentials = createRecord.email(loginCredentials.is.email)
 }
 

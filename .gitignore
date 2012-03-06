@@ -4,6 +4,7 @@
 *.settings
 *.pydevproject
 *.project
+*.cache
 /build
 /project
 /target
