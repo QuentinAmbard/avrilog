@@ -5,6 +5,7 @@
 *.pydevproject
 *.project
 *.cache
+*.idea
 /build
 /project
 /target
