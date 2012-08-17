@@ -1,0 +1,5 @@
+@(account: model.Account, apps: List[model.Application])
+
+@main("Avrilog - Dashboard",  Option(account), apps) {
+    @account.firstname dss
+}
