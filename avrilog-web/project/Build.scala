@@ -8,10 +8,11 @@ object ApplicationBuild extends Build {
     val appVersion      = "1.0-SNAPSHOT"
 
     val appDependencies = Seq(
-        "jp.t2v" %% "play20.auth" % "0.3-SNAPSHOT", //0.2
+        "jp.t2v" %% "play20.auth" % "0.3", //0.2
         "org.apache.hbase" % "hbase" % "0.94.0",
         "org.apache.hadoop" % "hadoop-common" % "0.23.1",
-        "org.apache.hadoop" % "hadoop-auth" % "0.23.1"
+        "org.apache.hadoop" % "hadoop-auth" % "0.23.1",
+        "joda-time" % "joda-time" % "2.1"
     )
     
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(

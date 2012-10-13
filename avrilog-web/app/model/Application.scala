@@ -1,15 +1,10 @@
 package model
-import org.apache.hadoop.hbase.HBaseConfiguration
-import org.apache.hadoop.hbase.client.HTable
-import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.client.Get
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.hadoop.hbase.client.Result
 import scala.collection.JavaConversions._
-import security.Permission
 import org.apache.hadoop.hbase.client.Put
 import org.apache.hadoop.hbase.client.Scan
-import org.apache.hadoop.hbase.client.ResultScanner
 
 case class Application(
   id: String,
@@ -18,13 +13,12 @@ case class Application(
 
 }
 
-object Application extends HBaseObject[Application] {
-  val table = new HTable(config, "application");
+object Application extends HBaseObject[Application]("application") {
 
   /**
    * Return an application by it's id (which is sha1(name)).
    */
-  def getById(id: String): Option[Application] = {
+  def findById(id: String): Option[Application] = {
     val get = new Get(Bytes.toBytes(id))
     val result = table.get(get)
     getFromResult(result)
@@ -48,13 +42,13 @@ object Application extends HBaseObject[Application] {
   }
 
   /**
-   * Build a user from a result
+   * Build an application from a result
    */
   private def getFromResult(result: Result): Option[Application] = {
     if (result.isEmpty()) {
       return None
     }
-    val id = result.getValue(Bytes.toBytes("id"), Bytes.toBytes("id"))
+    val id = result.getValue(Bytes.toBytes("info"), Bytes.toBytes("id"))
     val name = result.getValue(Bytes.toBytes("info"), Bytes.toBytes("name"))
     val secret = result.getValue(Bytes.toBytes("info"), Bytes.toBytes("secret"))
     Option(Application(Bytes.toString(id), Bytes.toString(name), Bytes.toString(secret)))

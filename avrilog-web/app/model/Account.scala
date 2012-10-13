@@ -1,27 +1,49 @@
 package model
-import org.apache.hadoop.hbase.HBaseConfiguration
+import scala.collection.JavaConversions._
+import model.security.Permission
 import org.apache.hadoop.hbase.client.HTable
-import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.client.Get
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.hadoop.hbase.client.Result
-import scala.collection.JavaConversions._
-import security.Permission
+import org.apache.hadoop.hbase.client.Put
 
 case class Account(
   email: String,
   firstname: String,
   lastname: String,
   password: String,
+  applications: List[Application],
   permissions: Set[Permission],
   salt: String) {
 
 }
 
-object Account extends HBaseObject[Account] {
-  val table = new HTable(config, "user");
-  val roleTable = new HTable(config, "role");
+object Account extends HBaseObject[Account]("account") {
+  val tablePermissionName = "permission"
+  val roleTable = new HTable(config, tablePermissionName);
 
+  def insert(account: Account) {
+    //Save the account
+    val p = new Put(Bytes.toBytes(account.email));
+    add(p, HBaseMetaData.Account.cfInfo, "email", account.email)
+    add(p, HBaseMetaData.Account.cfInfo, "firstname", account.firstname)
+    add(p, HBaseMetaData.Account.cfInfo, "lastname", account.lastname)
+    add(p, HBaseMetaData.Account.cfInfo, "lastname", account.lastname)
+    add(p, HBaseMetaData.Account.cfInfo, "password", account.password)
+    add(p, HBaseMetaData.Account.cfInfo, "salt", account.salt)
+    add(p, HBaseMetaData.Account.cfInfo, "password", account.password)
+    table.put(p)
+
+    //save the account permissions.
+    if (!account.permissions.isEmpty && (account.permissions.size == 1 && account.permissions.contains(Permission.USER))) {
+      val pPerm = new Put(Bytes.toBytes(account.email));
+      add(pPerm, HBaseMetaData.Permission.cfInfo, "email", account.email)
+      account.permissions.filter(_ != Permission.USER).foreach((permission) => {
+        add(pPerm, HBaseMetaData.Permission.cfInfo, permission.toString(), "1")
+      })
+      roleTable.put(pPerm)
+    }
+  }
   /**
    * Return a user by it's email.
    */
@@ -65,7 +87,7 @@ object Account extends HBaseObject[Account] {
     val password = result.getValue(Bytes.toBytes("info"), Bytes.toBytes("password"))
     val salt = result.getValue(Bytes.toBytes("info"), Bytes.toBytes("salt"))
     val permissions = getRole(Bytes.toString(email))
-
-    Option(Account(Bytes.toString(email), Bytes.toString(firstname), Bytes.toString(lastname), Bytes.toString(password), permissions, Bytes.toString(salt)))
+    val apps = Application.findAll()
+    Option(Account(Bytes.toString(email), Bytes.toString(firstname), Bytes.toString(lastname), Bytes.toString(password), apps, permissions, Bytes.toString(salt)))
   }
 }

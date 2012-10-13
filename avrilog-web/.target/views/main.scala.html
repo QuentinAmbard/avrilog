@@ -1,4 +1,4 @@
-@(title: String, account: Option[model.Account], apps: List[model.Application])(content: Html)
+@(title: String, account: Option[model.Account])(content: Html)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -36,7 +36,7 @@
 		  	@account match {
 		  		case None => {
 		  		  <form style="margin: 0px" action="/login" method="POST">
-				    <input type="email" name="email" placeholder="Email" id="email" value="admin@@gmail.com"/>
+				    <input type="email" name="email" placeholder="Email" id="email" value="admin@@admin.com"/>
 				    <input type="password" name="password" id="password" placeholder="Password" value="admin" />
 				    <button class="btn" type="submit" id="loginbutton">Login</button>
 				  </form>
@@ -49,7 +49,7 @@
 		                <li><a href="#">Another action</a></li>
 		                <li><a href="#">Something else here</a></li>
 		                <li class="divider"></li>
-		                <li><a href="#">Separated link</a></li>
+		                <li><a href="/logout">Logout</a></li>
 		              </ul>
 		            </li>
 				}
@@ -69,11 +69,11 @@
 	              <li class="dropdown">
 	                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Select an application<b class="caret"></b></a>
 	                <ul class="dropdown-menu">
-	                  @for(app <- apps) {
-		                <li><a href="#">@app.name</a></li>
+	                  @for(app <- account.get.applications) {
+		                <li><a href="/apps">@app.name</a></li>
 		              }
 	                  <li class="divider"></li>
-	                  <li><a href="#">Create a new application</a></li>
+	                  <li><a href="/app/create">Create a new application</a></li>
 	                </ul>
 	              </li>
 	          }

@@ -9,10 +9,10 @@ import views._
 import play.api.mvc.Results._
 import jp.t2v.lab.play20.auth._
 import play.api.data._
+import model.security._
 import model.Account
-import security._
-import security.Permission._
-import model.Application
+import model.security.Permission._
+import model.security.Permission
 
 object Home extends Controller with Auth with LoginLogout with AuthConfigImpl {
 
@@ -23,15 +23,11 @@ object Home extends Controller with Auth with LoginLogout with AuthConfigImpl {
 
   def index = optionalUserAction { user =>
     implicit request =>
-      val apps = user match {
-        case None => Nil
-        case _ => Application.findAll()
-      }
-      Ok(html.index(user, apps))
+      Ok(html.index(user))
   }
 
   def login = Action { implicit request =>
-    Ok(html.login(loginForm))
+    Ok(html.login(null))
   }
 
   def logout = Action { implicit request =>
@@ -50,9 +46,8 @@ object Home extends Controller with Auth with LoginLogout with AuthConfigImpl {
 object Message extends Controller with Auth with AuthConfigImpl {
   def main = authorizedAction(USER) { user =>
     implicit request =>
-      val apps = Application.findAll()
       val title = "message main"
-      Ok(html.test(user, apps))
+      Ok(html.test(user))
   }
 }
 

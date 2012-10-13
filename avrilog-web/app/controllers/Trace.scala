@@ -9,9 +9,8 @@ import views._
 import play.api.mvc.Results._
 import jp.t2v.lab.play20.auth._
 import play.api.data._
-import model.Account
-import security._
-import security.Permission._
+import model.security._
+import model.security.Permission._
 
 object Trace extends Controller with Auth with AuthConfigImpl {
 
