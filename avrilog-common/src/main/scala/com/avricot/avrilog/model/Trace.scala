@@ -7,8 +7,6 @@ import org.apache.hadoop.hbase.util.Bytes
 import org.msgpack.annotation.Message
 import org.msgpack.MessagePack
 import org.msgpack.ScalaMPack;
-
-import com.avricot.avrilog.serialize.DateTimeTemplate
 import scala.collection.mutable.Map
 
 @Message

@@ -6,7 +6,6 @@ import org.junit.Assert
 import org.msgpack.ScalaMPack;
 import org.msgpack.ScalaMessagePack._
 import org.msgpack.annotation.Message
-import com.avricot.avrilog.serialize.MPack
 import scala.collection.mutable.Map
 class SerializationTest {
 
