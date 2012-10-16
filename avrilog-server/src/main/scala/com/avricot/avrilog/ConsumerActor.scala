@@ -6,31 +6,54 @@ import akka.actor.Actor
 import com.rabbitmq.client.AMQP
 import akka.actor.ActorSystem
 import com.rabbitmq.client.Channel
+import akka.actor.ActorLogging
+import com.rabbitmq.client.ShutdownSignalException
+import com.rabbitmq.client.Connection
+import scala.collection.mutable.HashSet
+import akka.util.duration._
+import akka.actor.ActorRef
 
-class ConsumerActor(queuName: String, f: (String) => Any) extends Actor {
-  def receive = {
-    case _ => startReceving
+case class Message(body: String, deliveryTag: Long, channel: Channel, actorRef: ActorRef) {
+  def sendAck() = {
+    channel.basicAck(deliveryTag, false)
   }
+}
+case class Listen
+case class Start
+case class Error
 
-  def startReceving = {
-    //Setup trace queue consumer.
-    val channel = RabbitConnector.connection.createChannel()
-    val consumer = new QueueingConsumer(channel)
-    channel.queueDeclare(queuName, true, false, false, null)
-    channel.basicConsume(queuName, false, consumer)
-    while (true) {
-      // wait for the message
-      val delivery = consumer.nextDelivery()
-      val msg = new String(delivery.getBody())
+class ConsumerActor(queuName: String, f: (Message) => Any) extends Actor with ActorLogging {
 
-      // send the message to the provided callback function
-      // and execute this in a subactor
-      context.actorOf(Props(new Actor {
-        def receive = {
-          case some: String => f(some);
-          case _ => {}
+  def receive = {
+    case Listen => {
+      try {
+        val connection = RabbitConnector.getNewConnection
+        val channel = connection.createChannel()
+        log.info("enter receging")
+        val consumer = new QueueingConsumer(channel)
+        channel.queueDeclare(queuName, true, false, false, null)
+        channel.basicConsume(queuName, false, consumer)
+        log.info("queue {} declared and consumed", queuName)
+        while (true) {
+          // wait for the message
+          val delivery = consumer.nextDelivery()
+          log.info("getting next deliv")
+          val msg = Message(new String(delivery.getBody()), delivery.getEnvelope().getDeliveryTag(), channel, sender)
+          // send the message to the provided callback function
+          // and execute this in a subactor
+          context.actorOf(Props(new Actor {
+            def receive = {
+              case msg: Message => f(msg)
+              case _ => log.error("unkonwn message")
+            }
+          })) ! msg
         }
-      })) ! msg
+      } catch {
+        case e: ShutdownSignalException => log.error(e, "ShutdownSignalException")
+        case e: Exception => log.error(e, "Unkown exception")
+      } finally {
+        sender ! Error
+      }
     }
   }
 }

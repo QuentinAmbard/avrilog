@@ -1,0 +1,18 @@
+search.engine.google.url=http://ajax.googleapis.com/ajax/services/search/web?start={start}&v={version}&userip={userip}&key={key}&rsz={rsz}&hl={hl}&gl={gl}&q={query}
+search.engine.google.version=1.0
+search.engine.google.limit=64
+search.engine.google.rsz=large
+search.engine.google.sleep = 0
+
+search.engine.bing.url=http://api.search.live.net/json.aspx?query={query}&market={market}&web.count={limit}&appId={key}&sources={sources}
+search.engine.bing.sources=web
+search.engine.bing.limit=50
+
+search.engine.yahoo.url=http://api.search.yahoo.com/WebSearchService/V1/webSearch?results={limit}&appid={key}&query={query}&output={output}&BossSearchService.languageAndRegion={language}
+search.engine.yahoo.limit=100
+search.engine.yahoo.output=json
+
+email.extractor.arobase.pattern=(?:\\s*[\\<\\(\\[]?\\s*@(?:\\s*nospam\\s*@)?\\s*[\\>\\)\\]]?\\s*)|(?:\\s+|\\s*[\\<\\(\\[]\\s*)a(?:t|robase)(?:\\s+|\\s*[\\>\\)\\]]\\s*)
+email.extractor.dot.pattern=\\s*[\\<\\(\\[]?\\s*(?:\\.|point|dot)\\s*[\\<\\)\\]]?\\s*
+email.extractor.mail.pattern=[a-zA-Z0-9_\\-]+(\\.[a-zA-Z0-9_\\-]+)*
+email.extractor.domain.pattern=[a-zA-Z]{2,6}

@@ -1,0 +1,34 @@
+package com.kadeal.alphabetic;
+
+/**
+ * Enum representation of not exhaustive alphabetic values in all languages.
+ */
+public enum AlphabeticValue {
+    OTHER, A("aàäâ"), //
+    B, //
+    C("cç"), //
+    D, //
+    E("eéèëê"), //
+    F, G, H, I, J, K, L, M, N, //
+    O("oöô"), //
+    P, Q, R, S, T, //
+    U("uüû"), //
+    V, W, X, //
+    Y("yÿ"), //
+    Z;
+
+    private final String allValues;
+
+    private AlphabeticValue() {
+	allValues = this.name().toLowerCase();
+    }
+
+    private AlphabeticValue(final String allValues) {
+	this.allValues = allValues;
+    }
+
+    public String getAllValues() {
+	return allValues;
+    }
+
+}

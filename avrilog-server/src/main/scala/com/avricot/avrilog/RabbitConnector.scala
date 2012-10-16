@@ -7,5 +7,6 @@ object RabbitConnector {
   val factory = new ConnectionFactory()
   factory.setHost(RabbitMQConfig.host)
   factory.setPort(RabbitMQConfig.port)
-  val connection = factory.newConnection()
+
+  def getNewConnection = factory.newConnection()
 }

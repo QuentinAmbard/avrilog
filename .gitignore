@@ -1,3 +1,7 @@
+avrilog-web/.target
+avrilog-common/project/target/
+avrilog-server/project/target/
+*.class
 *.classpath
 */target
 */bin
@@ -10,3 +14,4 @@
 /build
 /project
 /target
+*/project/target

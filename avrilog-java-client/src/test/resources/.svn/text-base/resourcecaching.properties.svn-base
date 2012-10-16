@@ -1,0 +1,3 @@
+engine.startup = com.kadeal.web.jawr.StartupTimeUniquenessPolicy
+
+([^(http)]*)/images/(.*)=$1/images/<<<startup>>>/$2

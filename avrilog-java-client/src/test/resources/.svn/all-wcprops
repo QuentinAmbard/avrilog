@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/repos/!svn/ver/7012/kadeal/trunk/kadeal-addons/src/test/resources
+END
+resourcecaching.properties
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/repos/!svn/ver/5304/kadeal/trunk/kadeal-addons/src/test/resources/resourcecaching.properties
+END
+log4j.xml
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/repos/!svn/ver/358/kadeal/trunk/kadeal-addons/src/test/resources/log4j.xml
+END
+stopwords_fr.properties
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/repos/!svn/ver/6569/kadeal/trunk/kadeal-addons/src/test/resources/stopwords_fr.properties
+END
+htmlBridge-context.xml
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/repos/!svn/ver/2783/kadeal/trunk/kadeal-addons/src/test/resources/htmlBridge-context.xml
+END
+itemNumberAwareFlatFileItemWriter.txt
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/repos/!svn/ver/6359/kadeal/trunk/kadeal-addons/src/test/resources/itemNumberAwareFlatFileItemWriter.txt
+END

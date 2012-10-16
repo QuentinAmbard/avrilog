@@ -12,7 +12,8 @@
   <inceptionYear>2012</inceptionYear>
   
   <modules>	
-  	<module>avrilog-java-client</module>
+  	<module>avrilog-server</module>
+  	<module>avrilog-proto</module>
   </modules>    
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

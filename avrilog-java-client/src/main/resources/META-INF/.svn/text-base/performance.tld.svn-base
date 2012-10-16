@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+	version="2.0">
+
+	<description>A Tag Library related to achieving high http performance for web sites.</description>
+
+	<tlib-version>1.0</tlib-version>
+
+	<short-name>perf</short-name>
+	<uri>http://www.kadeal.com/tags/performance</uri>
+
+	<tag>
+		<description>Save the given script in the request in order to render it later wit the tag 'render'.</description>
+		<name>defer</name>
+		<tag-class>com.kadeal.web.taglibs.DeferingScriptTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<description>Source script</description>
+			<name>scr</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+	</tag>
+
+	<tag>
+		<description>Render all the scripts saved in the request by the 'defer' tag.</description>
+		<name>deferred</name>
+		<tag-class>com.kadeal.web.taglibs.RenderingScriptTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<description>Identifier of source script</description>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+	</tag>
+
+</taglib>
