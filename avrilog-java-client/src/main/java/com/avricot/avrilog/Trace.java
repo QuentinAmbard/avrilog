@@ -1,38 +1,116 @@
 package com.avricot.avrilog;
 
-import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.MessageProperties;
+import org.msgpack.annotation.Message;
 
+@Message
 public class Trace {
-    private final static String QUEUE_NAME = "avrilog-trace";
-    private static Connection connection;
 
-    public static void init() {
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
-        try {
-            connection = factory.newConnection();
-            Channel channel = connection.createChannel();
-            channel.queueDeclare(QUEUE_NAME, true, false, false, null);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    private byte[] id;
+    private String category;
+    private String info;
+    private long clientDate = System.currentTimeMillis();
+    private User user;
+    private Map<String, String> data = null;
+
+    public Trace() {
+        id = IdGenerator.generateId();
     }
 
-    public static void trance(final String msg) {
-        try {
-            Channel channel = connection.createChannel();
-            if (channel == null) {
-
-            }
-            channel.basicPublish("", QUEUE_NAME, MessageProperties.PERSISTENT_TEXT_PLAIN, msg.getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public byte[] getId() {
+        return id;
     }
+
+    public Trace setId(final byte[] id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public Trace setCategory(final String category) {
+        this.category = category;
+        return this;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public Trace setInfo(final String info) {
+        this.info = info;
+        return this;
+    }
+
+    public long getClientDate() {
+        return clientDate;
+    }
+
+    public Trace setClientDate(final long clientDate) {
+        this.clientDate = clientDate;
+        return this;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public Trace setUser(final User user) {
+        this.user = user;
+        return this;
+    }
+
+    public Map<String, String> getData() {
+        return data;
+    }
+
+    public Trace addData(final String key, final String value) {
+        if (this.data == null) {
+            this.data = new HashMap<String, String>();
+        }
+        this.data.put(key, value);
+        return this;
+    }
+
+    public Trace setData(final Map<String, String> data) {
+        this.data = data;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "Trace [category=" + category + ", info=" + info + ", clientDate=" + clientDate + ", user=" + user + "]";
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.hashCode(id);
+        return result;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Trace other = (Trace) obj;
+        if (!Arrays.equals(id, other.id)) {
+            return false;
+        }
+        return true;
+    }
+
 }
