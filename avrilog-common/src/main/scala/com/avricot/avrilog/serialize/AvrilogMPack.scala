@@ -12,7 +12,7 @@ import org.msgpack.`type`.Value
 import org.joda.time.DateTime
 import com.avricot.avrilog.serialize.template.DateTimeTemplate
 
-object ScalaMPack extends ScalaMessagePackWrapper with ValueConversions {
+object AvrilogMPack extends ScalaMessagePackWrapper with ValueConversions {
   val template = new TemplateRegistry(null);
   var messagePack = new MessagePack()
   val sp = StringTemplate.getInstance()

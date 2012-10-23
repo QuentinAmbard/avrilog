@@ -57,6 +57,6 @@ public class AvrilogClientIntegrationTest {
     }
 
     private Trace getTrace(final String category) {
-        return new Trace().setCategory(category);
+        return new Trace().setUser(new User().setFirstname("firstname")).setCategory(category).addData("key", "value");
     }
 }

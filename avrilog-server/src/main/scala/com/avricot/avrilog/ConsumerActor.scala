@@ -12,18 +12,15 @@ import com.rabbitmq.client.Connection
 import scala.collection.mutable.HashSet
 import akka.util.duration._
 import akka.actor.ActorRef
+import scala.util.control.Exception
 
-case class Message(body: String, deliveryTag: Long, channel: Channel, actorRef: ActorRef) {
-  def sendAck() = {
-    channel.basicAck(deliveryTag, false)
-  }
-}
 case class Listen
 case class Start
 case class Error
 
-class ConsumerActor(queuName: String, f: (Message) => Any) extends Actor with ActorLogging {
+case class Message(body: Array[Byte], deliveryTag: Long, channel: Channel, actorRef: ActorRef) { def sendAck() = channel.basicAck(deliveryTag, false) }
 
+class ConsumerActor(queuName: String, f: (Message) => Any) extends Actor with ActorLogging {
   def receive = {
     case Listen => {
       try {
@@ -38,12 +35,16 @@ class ConsumerActor(queuName: String, f: (Message) => Any) extends Actor with Ac
           // wait for the message
           val delivery = consumer.nextDelivery()
           log.info("getting next deliv")
-          val msg = Message(new String(delivery.getBody()), delivery.getEnvelope().getDeliveryTag(), channel, sender)
+          val msg = Message(delivery.getBody(), delivery.getEnvelope().getDeliveryTag(), channel, sender)
           // send the message to the provided callback function
           // and execute this in a subactor
           context.actorOf(Props(new Actor {
             def receive = {
-              case msg: Message => f(msg)
+              case msg: Message => {
+                try { f(msg) } catch {
+                  case e: Exception => log.error(e, "can't parse message")
+                }
+              }
               case _ => log.error("unkonwn message")
             }
           })) ! msg

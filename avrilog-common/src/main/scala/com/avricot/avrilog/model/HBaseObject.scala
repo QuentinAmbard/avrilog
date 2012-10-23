@@ -11,6 +11,10 @@ import org.apache.hadoop.hbase.client.HTable
 import scala.Array.canBuildFrom
 import org.apache.hadoop.hbase.client.Put
 
+trait BaseHBaseObject {
+  def getHBaseId(): Array[Byte]
+}
+
 class HBaseObject[A](name: String) {
   val tableName = name
   val config = HBaseConfiguration.create()
@@ -74,4 +78,40 @@ class HBaseObject[A](name: String) {
     put.add(Bytes.toBytes(family), Bytes.toBytes(qualifier), Bytes.toBytes(value))
   }
 
+  def save(obj: BaseHBaseObject) = {
+    val put = new Put(obj.getHBaseId)
+    def findType(family: Array[Byte], name: String, value: Any): Unit = {
+      val bytes = value match {
+        case v if v == null => null
+        case v: Int => Bytes.toBytes(v.asInstanceOf[Int])
+        case v: Long => Bytes.toBytes(v.asInstanceOf[Long])
+        case v: Float => Bytes.toBytes(v.asInstanceOf[Float])
+        case v: String => Bytes.toBytes(v.asInstanceOf[String])
+        case v: Boolean => Bytes.toBytes(v.asInstanceOf[Boolean])
+        case v: DateTime => Bytes.toBytes(isoFormatter.print(v.asInstanceOf[DateTime]))
+        case v: Array[Byte] => v.asInstanceOf[Array[Byte]]
+        case v: Map[Any, Any] => {
+          for ((k, v) <- v.asInstanceOf[Map[Any, Any]]) {
+            findType(Bytes.toBytes(name), k.toString, v)
+          }
+          null
+        }
+        case v: Any => exploreObj(Bytes.toBytes(name), v); null
+        case _ => null
+      }
+      if (bytes != null) {
+        put.add(family, Bytes.toBytes(name), bytes)
+      }
+    }
+
+    def exploreObj(family: Array[Byte], obj: Any) = {
+      for (field <- obj.getClass.getDeclaredFields) {
+        field.setAccessible(true)
+        val t = field.getType()
+        val value = field.get(obj)
+        findType(family, field.getName(), value)
+      }
+    }
+    exploreObj(Bytes.toBytes("info"), obj)
+  }
 }

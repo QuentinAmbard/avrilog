@@ -8,11 +8,13 @@ import org.msgpack.annotation.Message;
 
 @Message
 public class Trace {
-
     private byte[] id;
     private String category;
     private String info;
+    // private long date = 0;
     private long clientDate = System.currentTimeMillis();
+    boolean sign = false;
+    boolean horodate = false;
     private User user;
     private Map<String, String> data = null;
 
@@ -111,6 +113,30 @@ public class Trace {
             return false;
         }
         return true;
+    }
+
+    // public long getDate() {
+    // return date;
+    // }
+    //
+    // public void setDate(final long date) {
+    // this.date = date;
+    // }
+
+    public boolean isSign() {
+        return sign;
+    }
+
+    public void setSign(final boolean sign) {
+        this.sign = sign;
+    }
+
+    public boolean isHorodate() {
+        return horodate;
+    }
+
+    public void setHorodate(final boolean horodate) {
+        this.horodate = horodate;
     }
 
 }
