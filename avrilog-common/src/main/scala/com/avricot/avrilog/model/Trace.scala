@@ -108,71 +108,57 @@ object Trace extends HBaseObject[Trace]("trace") {
     for (field <- klass.getDeclaredFields()) {
       objectArgs += field.getName()
     }
+    val objArgs = scala.collection.mutable.Map[String, scala.collection.mutable.Map[String, Array[Byte]]]();
+    for (kv <- result.raw()) {
+      val splitKV = kv.split()
+      val hBaseFamily = Bytes.toString(splitKV.getFamily())
+      val fieldName = Bytes.toString(splitKV.getQualifier())
+      val fieldValues = objArgs.get(hBaseFamily) getOrElse scala.collection.mutable.Map[String, Array[Byte]]();
+      fieldValues(fieldName) = splitKV.getValue()
+      objArgs(hBaseFamily) = fieldValues
+    }
 
     def buildObject(klass: Class[_], family: String): Any = {
-      val hbaseArgs = scala.collection.mutable.Map[String, Any]()
-      for (kv <- result.raw()) {
-        val splitKV = kv.split()
-        val hBaseFamily = Bytes.toString(splitKV.getFamily())
-        val fieldName = Bytes.toString(splitKV.getQualifier())
-        println(fieldName)
-        println(hBaseFamily + " " + family + " " + hBaseFamily.startsWith(family) + " " + (hBaseFamily.count(_ == '.') + 1))
-        if (family == hBaseFamily) {
-          val field = klass.getDeclaredField(fieldName)
-          println(fieldName + " ===> " + field.getType())
-          hbaseArgs(fieldName) = getValue(field.getType(), splitKV.getValue())
-        } else if (hBaseFamily.startsWith(family) && hBaseFamily.count(_ == '.') == family.count(_ == '.') + 1) {
-          val field = klass.getDeclaredField(hBaseFamily.substring(family.size + 1))
-          println(fieldName + " ===> " + field.getType() + " " + hBaseFamily)
-          hbaseArgs(hBaseFamily) = field.getType() match {
-            case M => {
-              val map = if (hbaseArgs.contains(hBaseFamily)) hbaseArgs.get(hBaseFamily).asInstanceOf[Map[String, String]] else scala.collection.mutable.Map[String, String]()
-              map(fieldName) = Bytes.toString(splitKV.getValue())
-              map
-            }
-            case _ => buildObject(field.getType(), hBaseFamily)
+      println("----------" + family)
+      if (!objArgs.contains(family)) return null
+      val args = scala.collection.mutable.MutableList[Object]()
+      //val mapArgs
+      //scan all the object field
+      klass match {
+        //Map constructor
+        case M => {
+          val map = scala.collection.mutable.Map[String, String]();
+          if (!objArgs.contains(family)) return null
+          println("ok i'm a map family " + family)
+          for ((k, v) <- objArgs.get(family).get) {
+            map(k) = Bytes.toString(v)
           }
+          map
+        }
+        //AnyRef constructor
+        case _ => {
+          for (field <- klass.getDeclaredFields()) {
+            println("objArgs.get(" + family + ").get(" + field.getName() + ")")
+            //If the field exist (AnyRef)
+            if (objArgs.get(family).get.contains(field.getName())) {
+              val value = getValue(field.getType(), objArgs.get(family).get(field.getName())).asInstanceOf[Object]
+              args += value
+            } else { //Else, it might be null or an embbed object, or a map
+              args += buildObject(field.getType(), family + "." + field.getName()).asInstanceOf[Object]
+            }
+          }
+          println("construct " + klass.getName())
+          val constructor = klass.getConstructors.head
+          constructor.newInstance(args: _*)
         }
       }
-      val args = scala.collection.mutable.MutableList[Object]()
-      for (field <- klass.getDeclaredFields) {
-        println(field.getName() + " = " + hbaseArgs.get(field.getName()))
-        args += (hbaseArgs.getOrElse(field.getName(), null)).asInstanceOf[Object]
-      }
-      val constructor = klass.getConstructors.head
-      constructor.newInstance(args: _*)
     }
+
     val t = buildObject(classOf[Trace], "info").asInstanceOf[Trace]
     println("category:" + t.category)
-    //        val data = scala.collection.mutable.Map[String, String]();
-    //        for (kv <- result.raw()) {
-    //          val splitKV = kv.split()
-    //          if (Bytes.toString(splitKV.getFamily()) == columnFamily) {
-    //            val qualifier = Bytes.toString(splitKV.getQualifier())
-    //            val value = Bytes.toString(splitKV.getValue())
-    //            data(qualifier) = value
-    //          }
-    //        }
-    //        data.toMap
+    println("category:" + t.user)
+    println("category:" + t.data)
     None
-    //    val trace = new Trace(new DateTime(), null, null)
-    //    trace.info = "";
-    //val trace = new Trace
-    //trace.id = getStr(result, "info", "id")
-    // trace.category = getStr(result, "info", "category")
-    //    trace.clientDate = getDate(result, "info", "clientDate")
-    //    trace.date = getDate(result, "info", "date")
-    // trace.info = getStr(result, "info", "info")
-
-    // trace.data = getColumnFamilyAsMap(result, "data")
-
-    //    trace.user.userId = getStr(result, "user", "userId")
-    //    trace.user.firstname = getStr(result, "user", "firstname")
-    //    trace.user.lastname = getStr(result, "user", "lastname")
-    //    trace.user.email = getStr(result, "user", "email")
-    //    trace.user.groupId = getStr(result, "user", "groupId")
-    //    trace.user.user = User(userId, firstname, lastname, email, groupId)
-    //null //Option(trace)
   }
 
 }

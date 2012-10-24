@@ -104,7 +104,7 @@ class HBaseObject[A](name: String) {
           println("ok i'm a map")
           for ((k, v) <- v.asInstanceOf[scala.collection.mutable.HashMap[_, _]]) {
             println(name + " " + k.toString + ", " + v)
-            findType(Bytes.toBytes(name), k.toString, v)
+            findType(Bytes.toBytes(Bytes.toString(family) + "." + name), k.toString, v)
           }
           null
         }
