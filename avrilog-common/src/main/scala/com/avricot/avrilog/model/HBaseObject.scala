@@ -11,10 +11,16 @@ import org.apache.hadoop.hbase.client.HTable
 import scala.Array.canBuildFrom
 import org.apache.hadoop.hbase.client.Put
 
+/**
+ * Default hbase trait.
+ */
 trait BaseHBaseObject {
   def getHBaseId(): Array[Byte]
 }
 
+/**
+ * Default hbase object, with hbase helpers for model companions.
+ */
 class HBaseObject[A](name: String) {
   val tableName = name
   val config = HBaseConfiguration.create()
@@ -78,6 +84,10 @@ class HBaseObject[A](name: String) {
     put.add(Bytes.toBytes(family), Bytes.toBytes(qualifier), Bytes.toBytes(value))
   }
 
+  /**
+   * Save the given object to the db.
+   * Recursivly explore imbricated object.
+   */
   def save(obj: BaseHBaseObject) = {
     val put = new Put(obj.getHBaseId)
     def findType(family: Array[Byte], name: String, value: Any): Unit = {
@@ -90,21 +100,25 @@ class HBaseObject[A](name: String) {
         case v: Boolean => Bytes.toBytes(v.asInstanceOf[Boolean])
         case v: DateTime => Bytes.toBytes(isoFormatter.print(v.asInstanceOf[DateTime]))
         case v: Array[Byte] => v.asInstanceOf[Array[Byte]]
-        case v: Map[Any, Any] => {
-          for ((k, v) <- v.asInstanceOf[Map[Any, Any]]) {
+        case v: scala.collection.mutable.HashMap[_, _] => {
+          println("ok i'm a map")
+          for ((k, v) <- v.asInstanceOf[scala.collection.mutable.HashMap[_, _]]) {
+            println(name + " " + k.toString + ", " + v)
             findType(Bytes.toBytes(name), k.toString, v)
           }
           null
         }
-        case v: Any => exploreObj(Bytes.toBytes(name), v); null
+        case v: Any => exploreObj(Bytes.toBytes(Bytes.toString(family) + "." + name), v); null
         case _ => null
       }
       if (bytes != null) {
+        println("put.add(" + Bytes.toString(family) + ", " + name + ", " + bytes + "))")
         put.add(family, Bytes.toBytes(name), bytes)
       }
     }
 
     def exploreObj(family: Array[Byte], obj: Any) = {
+      println("exploring(" + Bytes.toString(family) + ", " + obj.getClass)
       for (field <- obj.getClass.getDeclaredFields) {
         field.setAccessible(true)
         val t = field.getType()
@@ -113,5 +127,6 @@ class HBaseObject[A](name: String) {
       }
     }
     exploreObj(Bytes.toBytes("info"), obj)
+    table.put(put)
   }
 }

@@ -27,7 +27,7 @@ class TraceConsumer {
     if (clientTrace.sign) {
       trace = trace.copy(signContent = Sign.sign())
     }
-    HBaseStockage.store(trace)
+    Trace.save(trace)
     println(trace.toJson)
     println(trace.category);
     println(msg.deliveryTag);

@@ -3564,7 +3564,7 @@
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] org.scala-sbt#cache;0.12.1!cache.jar[0m
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] org.scala-sbt#test-agent;0.12.1!test-agent.jar[0m
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] org.scala-tools.testing#test-interface;0.5!test-interface.jar[0m
-[0m[[0mdebug[0m] [0m:: resolution report :: resolve 1691ms :: artifacts dl 52ms[0m
+[0m[[0mdebug[0m] [0m:: resolution report :: resolve 1752ms :: artifacts dl 45ms[0m
 [0m[[0mdebug[0m] [0mNbr of module to sort : 4[0m
 [0m[[0mdebug[0m] [0mSort dependencies of : com.typesafe.sbteclipse#sbteclipse-plugin;2.1.0 / Number of dependencies = 3[0m
 [0m[[0mdebug[0m] [0mSort dependencies of : com.typesafe.sbteclipse#sbteclipse-core;2.1.0 / Number of dependencies = 3[0m
@@ -4366,5 +4366,5 @@
 [0m[[0mdebug[0m] [0m	report for default#default-fcc836;0.1-SNAPSHOT docs produced in /home/quentin/workspace/avrilog/avrilog-server/project/target/resolution-cache/reports/default-default-fcc836/docs-resolved.xml[0m
 [0m[[0mdebug[0m] [0mNbr of module to sort : 0[0m
 [0m[[0mdebug[0m] [0m	report for default#default-fcc836;0.1-SNAPSHOT pom produced in /home/quentin/workspace/avrilog/avrilog-server/project/target/resolution-cache/reports/default-default-fcc836/pom-resolved.xml[0m
-[0m[[0mdebug[0m] [0m	resolve done (1691ms resolve - 52ms download)[0m
+[0m[[0mdebug[0m] [0m	resolve done (1752ms resolve - 45ms download)[0m
 [0m[[0minfo[0m] [0mDone updating.[0m

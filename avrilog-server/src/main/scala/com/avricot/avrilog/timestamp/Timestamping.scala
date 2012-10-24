@@ -25,7 +25,6 @@ object Timestamping {
 
   val authString = username + ":" + password;
   val authStringEnc = Base64.encodeBase64URLSafeString(authString.getBytes());
-  val params = interpolate(rawParams, Map("algo" -> algo, "username" -> username, "password" -> password, "exchange" -> exchange))
 
   def interpolate(text: String, vars: Map[String, String]) = (text /: vars) { (t, kv) => t.replace("${" + kv._1 + "}", URLEncoder.encode(kv._2, encoding)) }
 
@@ -35,7 +34,7 @@ object Timestamping {
 
   def timestamp(b: Array[Byte]): Array[Byte] = {
     val hash = getHash(b)
-    val parameters = interpolate(params, Map("hash" -> hash))
+    val parameters = interpolate(rawParams, Map("hash" -> hash))
     val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection];
     conn.setDoOutput(true);
     conn.setDoInput(true);
@@ -45,7 +44,7 @@ object Timestamping {
       conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
     }
     val out = conn.getOutputStream();
-    out.write(params.getBytes(encoding));
+    out.write(parameters.getBytes(encoding));
     out.flush();
     Resource.fromInputStream(conn.getInputStream()).byteArray
   }

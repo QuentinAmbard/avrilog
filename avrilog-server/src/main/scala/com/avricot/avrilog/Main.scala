@@ -13,12 +13,20 @@ import org.msgpack.AvrilogMPack
 import scala.collection.mutable.Set
 import scala.collection.mutable.HashSet
 import com.avricot.avrilog.model.Trace
+import com.avricot.avrilog.model.HBaseModel
+import com.typesafe.config.ConfigFactory
+import org.slf4j.LoggerFactory
 
 object Main {
+  def logger = LoggerFactory.getLogger(Main.getClass())
   def main(args: Array[String]) = {
-    println("ok")
+    logger.info("start avrilog server")
+    println("damn,")
+    val config = ConfigFactory.load()
+    if (config.getBoolean("hbase.checkSchemaOnStartup")) {
+      HBaseModel.checkTable
+    }
     val test = new TraceConsumer()
     println("consumer")
   }
 }
-

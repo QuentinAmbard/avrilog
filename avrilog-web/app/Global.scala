@@ -30,7 +30,7 @@ object Global extends GlobalSettings {
     initTable(hbaseAdmin, HBaseMetaData.Permission.tableName, Array(HBaseMetaData.Permission.cfInfo))
     initTable(hbaseAdmin, HBaseMetaData.Account.tableName, Array(HBaseMetaData.Account.cfInfo), () =>
       Account.insert(Account("admin@admin.com", "admin", "admin", "admin", List[Application](), Set[Permission](Permission.ADMIN), "admin")))
-    Application.findAll()
+    //Application.findAll()
     //initTable(hbaseAdmin, Trace.tableName, Array("info", "user"))
   }
 
