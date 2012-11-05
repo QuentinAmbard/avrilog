@@ -28,41 +28,9 @@ class SerializationTest {
     val trace = new Trace(ctrace, null, null)
     val isoFormatter = ISODateTimeFormat.dateTime();
 
-    def findType(family: String, name: String, value: Any): Unit = {
-      val bytes = value match {
-        case v if v == null => Unit
-        case v: Int => v.asInstanceOf[Int]
-        case v: Long => v.asInstanceOf[Long]
-        case v: Float => v.asInstanceOf[Float]
-        case v: String => v.asInstanceOf[String]
-        case v: Boolean => v.asInstanceOf[Boolean]
-        case v: DateTime => isoFormatter.print(v.asInstanceOf[DateTime])
-        case v: Array[Byte] => v.asInstanceOf[Array[Byte]]
-        case v: Map[Any, Any] => {
-          for ((k, v) <- v.asInstanceOf[Map[Any, Any]]) {
-            findType(name, k.toString, v)
-          }
-          Unit
-        }
-        case v: Any => exploreObj(name, v); Unit
-        case _ => Unit
-      }
-      if (bytes != Unit) println(family + " field=" + name + " value=" + bytes)
-    }
-
-    def exploreObj(family: String, obj: Any) = {
-      for (field <- obj.getClass.getDeclaredFields) {
-        field.setAccessible(true)
-        val t = field.getType()
-        val value = field.get(obj)
-        findType(family, field.getName(), value)
-      }
-    }
-    exploreObj("info", trace)
-
-    //    val test2 = mapper.writeValueAsString(trace)
-    //    println(test2)
-    //println(trace.toJson)
+    val test2 = mapper.writeValueAsString(trace)
+    println(test2)
+    println(trace.toJson)
 
   }
   @Test

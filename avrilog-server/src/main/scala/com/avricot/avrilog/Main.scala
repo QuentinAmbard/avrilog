@@ -13,7 +13,7 @@ import org.msgpack.AvrilogMPack
 import scala.collection.mutable.Set
 import scala.collection.mutable.HashSet
 import com.avricot.avrilog.model.Trace
-import com.avricot.avrilog.model.HBaseModel
+import com.avricot.horm.HBaseModel;
 import com.typesafe.config.ConfigFactory
 import org.slf4j.LoggerFactory
 
@@ -24,7 +24,7 @@ object Main {
     println("damn,")
     val config = ConfigFactory.load()
     if (config.getBoolean("hbase.checkSchemaOnStartup")) {
-      HBaseModel.checkTable
+      HBaseModel.initTable(classOf[Trace])
     }
     val test = new TraceConsumer()
     println("consumer")

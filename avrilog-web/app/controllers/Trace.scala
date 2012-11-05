@@ -12,6 +12,10 @@ import play.api.data._
 import model.security._
 import model.security.Permission._
 
+//  val isoFormatter = ISODateTimeFormat.dateTime();
+//  isoFormatter.print(datetime)
+//  isoFormatter.parseDateTime(long)
+
 object Trace extends Controller with Auth with AuthConfigImpl {
 
 }
