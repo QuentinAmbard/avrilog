@@ -17,6 +17,11 @@ import scala.reflect.Manifest.ClassTypeManifest
 import scala.collection.immutable.List
 import scala.collection.mutable.Seq
 import scala.collection.mutable.HashMap
+import com.avricot.horm.HormObject
+import com.avricot.horm.HormObject
+import com.avricot.horm.HormBaseObject
+import com.avricot.avrilog.json.JsonMapper
+import com.avricot.avrilog.json.JsonObj
 //import com.codahale.jerkson.Json._
 
 /**
@@ -41,23 +46,16 @@ case class ClientTrace(var id: Array[Byte], var category: String, var info: Stri
 /**
  * A trace, stored in the database.
  */
-case class Trace(id: Array[Byte], category: String, info: String, clientDate: DateTime, sign: Boolean, horodate: Boolean, user: User, data: Map[String, String], date: DateTime = null, timestampingContent: Array[Byte] = null, signContent: Array[Byte] = null) extends HormObject {
+case class Trace(id: Array[Byte], category: String, info: String, clientDate: DateTime, sign: Boolean, horodate: Boolean, user: User, data: Map[String, String], date: DateTime = null, timestampingContent: Array[Byte] = null, signContent: Array[Byte] = null) extends HormBaseObject with JsonObj {
   def this(clientTrace: ClientTrace) = {
     this(clientTrace.id, clientTrace.category, clientTrace.info, clientTrace.clientDate, clientTrace.sign, clientTrace.horodate, clientTrace.user, clientTrace.data, new DateTime(), null, null)
   }
   def this(clientTrace: ClientTrace, timestampingContent: Array[Byte], signContent: Array[Byte]) = {
     this(clientTrace.id, clientTrace.category, clientTrace.info, clientTrace.clientDate, clientTrace.sign, clientTrace.horodate, clientTrace.user, clientTrace.data, new DateTime(), timestampingContent, signContent)
   }
-  def toJson() = {
-    Trace.mapper.writeValueAsString(this)
-  }
   def getHBaseId() = id
 }
 
 object Trace extends HormObject[Trace] {
-  val mapper = new ObjectMapper()
-  mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
-  mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
-  mapper.registerModule(DefaultScalaModule)
 
 }

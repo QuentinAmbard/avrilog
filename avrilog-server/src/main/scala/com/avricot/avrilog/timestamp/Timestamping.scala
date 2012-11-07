@@ -35,17 +35,17 @@ object Timestamping {
   def timestamp(b: Array[Byte]): Array[Byte] = {
     val hash = getHash(b)
     val parameters = interpolate(rawParams, Map("hash" -> hash))
-    val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection];
-    conn.setDoOutput(true);
-    conn.setDoInput(true);
-    conn.setRequestMethod(method);
-    conn.setRequestProperty("Content-Type", contentType);
+    val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection]
+    conn.setDoOutput(true)
+    conn.setDoInput(true)
+    conn.setRequestMethod(method)
+    conn.setRequestProperty("Content-Type", contentType)
     if (useBasicAuth) {
-      conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+      conn.setRequestProperty("Authorization", "Basic " + authStringEnc)
     }
-    val out = conn.getOutputStream();
-    out.write(parameters.getBytes(encoding));
-    out.flush();
+    val out = conn.getOutputStream()
+    out.write(parameters.getBytes(encoding))
+    out.flush()
     Resource.fromInputStream(conn.getInputStream()).byteArray
   }
 

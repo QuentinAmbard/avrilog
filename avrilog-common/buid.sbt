@@ -20,9 +20,10 @@ libraryDependencies ++= Seq(
     "org.apache.hadoop" % "hadoop-auth" % "0.23.1" withSources() ,
     "joda-time" % "joda-time" % "2.1" withSources() ,
 	//"com.codahale" % "jerkson_2.9.1" % "0.6.0",
-    "com.fasterxml.jackson.module" % "jackson-module-scala" % "2.1.0"  withSources() ,
+    "com.fasterxml.jackson.module" % "jackson-module-scala" % "2.1.1"  withSources() ,
+    "com.fasterxml.jackson.datatype" % "jackson-datatype-joda" % "2.1.0"  withSources() ,
 	"com.typesafe" % "config" % "0.6.0" withSources() ,
-	"org.msgpack" %% "msgpack-scala" % "0.6.6"  withSources()  
-)
+	"org.msgpack" %% "msgpack-scala" % "0.6.6"  withSources()  ,
+	"com.avricot" %% "horm" % "0.1" withSources() )
 
 

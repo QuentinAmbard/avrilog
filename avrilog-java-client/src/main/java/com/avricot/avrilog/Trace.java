@@ -9,9 +9,9 @@ import org.msgpack.annotation.Message;
 @Message
 public class Trace {
     private byte[] id;
+    private Long entityId;
     private String category;
     private String info;
-    // private long date = 0;
     private long clientDate = System.currentTimeMillis();
     boolean sign = false;
     boolean horodate = false;
@@ -137,6 +137,14 @@ public class Trace {
 
     public void setHorodate(final boolean horodate) {
         this.horodate = horodate;
+    }
+
+    public Long getEntityId() {
+        return entityId;
+    }
+
+    public void setEntityId(final Long entityId) {
+        this.entityId = entityId;
     }
 
 }
