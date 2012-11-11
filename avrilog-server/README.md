@@ -80,12 +80,12 @@ more info here : http://blog.didierstevens.com/2008/12/30/howto-make-your-own-ce
 
 ####Generating you own timestamp certificate file :
 
-# generate CA (need to do it only once)
-/usr/lib/ssl/misc/CA.sh -newca
-# create certificate request
-openssl req -new -keyout user.key -out user.req -config yourconf.cnf
-# sign request by CA
-openssl ca -policy policy_anything -config yourconf.cnf -out user.pem -infiles user.req
-# convert it into PKCS#12 (pfx) container, that can be used from various soft
-openssl pkcs12 -export -in user.pem -inkey user.key -out user.p12 -name user -caname your_ca_name -chain -CAfile ./demoCA/cacert.pem
+generate CA (need to do it only once)
+    /usr/lib/ssl/misc/CA.sh -newca
+create certificate request
+    openssl req -new -keyout user.key -out user.req -config yourconf.cnf
+sign request by CA
+    openssl ca -policy policy_anything -config yourconf.cnf -out user.pem -infiles user.req
+convert it into PKCS#12 (pfx) container, that can be used from various soft
+    openssl pkcs12 -export -in user.pem -inkey user.key -out user.p12 -name user -caname your_ca_name -chain -CAfile ./demoCA/cacert.pem
 
