@@ -12,27 +12,26 @@ import com.avricot.avrilog.model.Trace
 import com.avricot.avrilog.sign.Sign
 import com.avricot.avrilog.model.ClientTrace
 import org.joda.time.DateTime
-import com.avricot.avrilog.stockage.HBaseStockage
-import com.avricot.avrilog.timestamp.Timestamping
 import org.msgpack.AvrilogMPack
+import com.avricot.avrilog.timestamp.Timestamping
+import com.avricot.avrilog.model.TraceContent
 
 class TraceConsumer {
   def handleTrance(msg: Message) = {
     msg.sendAck();
     val clientTrace = AvrilogMPack.read[ClientTrace](msg.body);
-    var trace = new Trace(clientTrace)
-    if (clientTrace.horodate) {
-      trace = trace.copy(timestampingContent = Timestamping.timestamp(trace.toJson))
-    }
-    if (clientTrace.sign) {
-      trace = trace.copy(signContent = Sign.sign())
+    val traceContent = new TraceContent(clientTrace)
+    val traceContentBytes = traceContent.toJson.getBytes()
+    val trace = clientTrace match {
+      case c if c.sign && c.horodate => Trace(traceContent, signContent = Sign.signWithTimestamp(traceContentBytes))
+      case c if c.sign => Trace(traceContent, signContent = Sign.sign(traceContentBytes))
+      case c if c.horodate => Trace(traceContent, timestampingContent = Timestamping.timestamp(traceContentBytes))
     }
     Trace.save(trace)
-    println(trace.toJson)
-    println(trace.category);
+    println(trace.content.toJson)
+    println(trace.content.category);
     println(msg.deliveryTag);
   }
-
   val system = ActorSystem()
   system.actorOf(Props(new ConsumerManager(handleTrance, RabbitMQConfig.queue))) ! Start
 }

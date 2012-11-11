@@ -36,8 +36,8 @@ case class User(var id: String, var firstname: String, var lastname: String, var
  * Client trace, build from clients message (compressed with msg pack)
  */
 @Message
-case class ClientTrace(var id: Array[Byte], var category: String, var info: String, var clientDate: DateTime, var sign: Boolean, var horodate: Boolean, var user: User, var data: Map[String, String]) { //
-  def this() = this(null, null, null, null, false, false, null, Map[String, String]()) //
+case class ClientTrace(var id: Array[Byte], var entityId: String, var category: String, var info: String, var clientDate: DateTime, var sign: Boolean, var horodate: Boolean, var user: User, var data: Map[String, String]) { //
+  def this() = this(null, null, null, null, null, false, false, null, Map[String, String]()) //
   def serialize(): Array[Byte] = {
     AvrilogMPack.write(this)
   }
@@ -46,14 +46,14 @@ case class ClientTrace(var id: Array[Byte], var category: String, var info: Stri
 /**
  * A trace, stored in the database.
  */
-case class Trace(id: Array[Byte], category: String, info: String, clientDate: DateTime, sign: Boolean, horodate: Boolean, user: User, data: Map[String, String], date: DateTime = null, timestampingContent: Array[Byte] = null, signContent: Array[Byte] = null) extends HormBaseObject with JsonObj {
+case class Trace(content: TraceContent, timestampingContent: Array[Byte] = null, signContent: Array[Byte] = null) extends HormBaseObject {
+  def getHBaseId() = content.id
+}
+
+case class TraceContent(id: Array[Byte], entityId: String, category: String, info: String, clientDate: DateTime, sign: Boolean, horodate: Boolean, user: User, data: Map[String, String], date: DateTime = null) extends JsonObj {
   def this(clientTrace: ClientTrace) = {
-    this(clientTrace.id, clientTrace.category, clientTrace.info, clientTrace.clientDate, clientTrace.sign, clientTrace.horodate, clientTrace.user, clientTrace.data, new DateTime(), null, null)
+    this(clientTrace.id, clientTrace.entityId, clientTrace.category, clientTrace.info, clientTrace.clientDate, clientTrace.sign, clientTrace.horodate, clientTrace.user, clientTrace.data, new DateTime())
   }
-  def this(clientTrace: ClientTrace, timestampingContent: Array[Byte], signContent: Array[Byte]) = {
-    this(clientTrace.id, clientTrace.category, clientTrace.info, clientTrace.clientDate, clientTrace.sign, clientTrace.horodate, clientTrace.user, clientTrace.data, new DateTime(), timestampingContent, signContent)
-  }
-  def getHBaseId() = id
 }
 
 object Trace extends HormObject[Trace] {

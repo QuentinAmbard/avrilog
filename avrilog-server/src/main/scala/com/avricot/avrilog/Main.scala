@@ -9,13 +9,11 @@ import akka.util.duration._
 import akka.actor.ActorLogging
 import akka.pattern.ask
 import akka.util.Timeout
-import org.msgpack.AvrilogMPack
-import scala.collection.mutable.Set
 import scala.collection.mutable.HashSet
-import com.avricot.avrilog.model.Trace
-import com.avricot.horm.HBaseModel;
 import com.typesafe.config.ConfigFactory
 import org.slf4j.LoggerFactory
+import com.avricot.horm.HormConfig
+import com.avricot.avrilog.model.Trace
 
 object Main {
   def logger = LoggerFactory.getLogger(Main.getClass())
@@ -24,7 +22,7 @@ object Main {
     println("damn,")
     val config = ConfigFactory.load()
     if (config.getBoolean("hbase.checkSchemaOnStartup")) {
-      HBaseModel.initTable(classOf[Trace])
+      HormConfig.initTable(classOf[Trace])
     }
     val test = new TraceConsumer()
     println("consumer")
