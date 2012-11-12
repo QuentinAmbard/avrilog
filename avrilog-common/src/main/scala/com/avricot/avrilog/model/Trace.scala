@@ -46,7 +46,7 @@ case class ClientTrace(var id: Array[Byte], var entityId: String, var category: 
 /**
  * A trace, stored in the database.
  */
-case class Trace(content: TraceContent, timestampingContent: Array[Byte] = null, signContent: Array[Byte] = null) extends HormBaseObject {
+case class Trace(content: TraceContent, timestampingContent: Array[Byte] = null, signContent: Array[Byte] = null) extends HormBaseObject with JsonObj {
   def getHBaseId() = content.id
 }
 
