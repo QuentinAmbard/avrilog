@@ -4,6 +4,7 @@ import org.junit.Assert
 import java.io.BufferedOutputStream
 import java.io.FileOutputStream
 import java.io.File
+import com.avricot.avrilog.json.JsonMapper
 
 class SignTest {
   val traceContent = """{"id":"DA==","info":"info","clientDate":"2012-11-07T10:59:03.000+01:00","sign":false,"horodate":false,"user":{"id":"userId","firstname":"firstname","lastname":"lastname"},"data":{"a":"aqsd"}}"""
@@ -19,9 +20,11 @@ class SignTest {
     writer.write(signedData);
     writer.close();
 
-    Assert.assertTrue(Sign.verifySign(traceContent.getBytes(), signedData))
-    Assert.assertFalse(Sign.verifySign(("t" + traceContent).getBytes(), signedData))
-
+    Assert.assertEquals(VerificationStatus.OK.toString, Sign.verifySign(traceContent.getBytes(), signedData).status)
+    val verif = Sign.verifySign(("t" + traceContent).getBytes(), signedData)
+    Assert.assertEquals(VerificationStatus.KO.toString, verif.status)
+    Assert.assertEquals("Signed digest doesn't match : message-digest attribute value does not match calculated value", verif.info)
   }
 
 }
+

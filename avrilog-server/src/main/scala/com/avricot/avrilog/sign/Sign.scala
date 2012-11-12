@@ -55,6 +55,7 @@ import org.bouncycastle.cms.CMSTypedStream
 import org.bouncycastle.cms.CMSSignerDigestMismatchException
 import org.bouncycastle.tsp.TSPValidationException
 import org.bouncycastle.tsp.TSPException
+import scala.collection.mutable.StringBuilder
 
 object Sign extends Hash {
   val logger = LoggerFactory.getLogger(Sign.getClass())
@@ -135,13 +136,14 @@ object Sign extends Hash {
     getSignedData(input, true).getEncoded()
   }
 
-  def verifySign(input: Array[Byte], signBlock: Array[Byte]): Boolean = {
+  def verifySign(input: Array[Byte], signBlock: Array[Byte]): VerificationInfo = {
     val hash = getRawHash(input, algo)
     val sign = new CMSSignedDataParser(new CMSTypedStream(new ByteArrayInputStream(input)), signBlock)
     val signedContent = sign.getSignedContent()
     signedContent.drain()
     val certStore = sign.getCertificates()
     val it = sign.getSignerInfos().getSigners().iterator()
+    val info = new StringBuilder()
     while (it.hasNext()) {
       val signer = it.next().asInstanceOf[SignerInformation]
       val certIt = certStore.getMatches(signer.getSID()).iterator()
@@ -152,19 +154,21 @@ object Sign extends Hash {
       try {
         if (!signer.verify(signerInfoVerifier)) {
           logger.trace("signer isn't verified")
-          return false
+          return VerificationInfo.getKo("Signer certificate info isn't verified.")
         }
         logger.trace("sign ok, digest match.")
       } catch {
-        case e: CMSSignerDigestMismatchException => logger.trace("digest doesn't match"); return false
+        case e: CMSSignerDigestMismatchException => logger.trace("Signed digest doesn't match"); return VerificationInfo.getKo("Signed digest doesn't match : " + e.getMessage())
       }
       //Check timestamp data.
       val attrs = signer.getUnsignedAttributes()
       if (attrs == null) {
-        logger.trace("unsigned attributes can't be found on this sign. No timestamp.")
+        info.append("unsigned attributes can't be found on this sign. No timestamp.")
+        logger.trace(info.toString)
       } else {
         val att = attrs.get(PKCSObjectIdentifiers.id_aa_signatureTimeStampToken)
         if (att == null) {
+          info.append("timestamp can't be found on this sign")
           logger.trace("timestamp can't be found on this sign (attr identifier : {})", PKCSObjectIdentifiers.id_aa_signatureTimeStampToken)
         } else {
           val dob = att.getAttrValues().getObjectAt(0)
@@ -179,20 +183,21 @@ object Sign extends Hash {
             try {
               tto.validate(tsaSignerInfoVerifier)
             } catch {
-              case e: TSPException => logger.error("error while processing token", e); return false
-              case e: TSPValidationException => logger.trace("timestamp is invalid", e); return false
+              case e: TSPException => logger.error("error while processing token", e); return VerificationInfo.getKo("error processing timestamp token : " + e.getMessage())
+              case e: TSPValidationException => logger.trace("timestamp is invalid", e); return VerificationInfo.getKo("timestamp certificate info verification error : " + e.getMessage())
             }
           }
           val digest = tto.getTimeStampInfo().getMessageImprintDigest()
           if (tto.getTimeStampInfo().getMessageImprintDigest().deep != getRawHash(signer.getSignature(), algo).deep) {
             logger.trace("timestamp digest doesn't match")
-            return false
+            return return VerificationInfo.getKo("a timestamp digest doesn't match.")
           }
+          info.append("timestamp can't be found on this sign")
           logger.trace("timestamp digest match")
         }
       }
     }
-    true
+    VerificationInfo.getOk(info.toString)
   }
 
   /**

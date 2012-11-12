@@ -14,8 +14,11 @@ class RemoteSignIntegrationTest {
     writer3.write(signedData);
     writer3.close();
 
-    Assert.assertTrue(Sign.verifySign(traceContent.getBytes(), signedData))
-    Assert.assertFalse(Sign.verifySign(("t" + traceContent).getBytes(), signedData))
+    Assert.assertEquals(VerificationStatus.OK.toString, Sign.verifySign(traceContent.getBytes(), signedData).status)
+
+    val verif = Sign.verifySign(("t" + traceContent).getBytes(), signedData)
+    Assert.assertEquals(VerificationStatus.KO.toString, verif.status)
+    Assert.assertEquals("Signed digest doesn't match : message-digest attribute value does not match calculated value", verif.info)
 
   }
 }
