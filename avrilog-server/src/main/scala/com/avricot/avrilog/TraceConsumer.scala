@@ -23,7 +23,7 @@ class TraceConsumer {
     val traceContent = new TraceContent(clientTrace)
     val traceContentBytes = traceContent.toJson.getBytes()
     val trace = clientTrace match {
-      case c if c.sign && c.horodate => Trace(traceContent, signContent = Sign.signWithTimestamp(traceContentBytes))
+      case c if c.sign && c.horodate => Trace(traceContent, signContent = Sign.signWithRemoteTimestamp(traceContentBytes))
       case c if c.sign => Trace(traceContent, signContent = Sign.sign(traceContentBytes))
       case c if c.horodate => Trace(traceContent, timestampingContent = Timestamping.timestamp(traceContentBytes))
     }

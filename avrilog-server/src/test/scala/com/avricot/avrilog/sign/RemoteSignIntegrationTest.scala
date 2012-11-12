@@ -5,23 +5,17 @@ import java.io.BufferedOutputStream
 import java.io.FileOutputStream
 import java.io.File
 
-class SignTest {
+class RemoteSignIntegrationTest {
   val traceContent = """{"id":"DA==","info":"info","clientDate":"2012-11-07T10:59:03.000+01:00","sign":false,"horodate":false,"user":{"id":"userId","firstname":"firstname","lastname":"lastname"},"data":{"a":"aqsd"}}"""
 
-  @Test def signTest(): Unit = {
-    val signedData = Sign.sign(traceContent.getBytes())
-
-    val writer2 = new BufferedOutputStream(new FileOutputStream(new File("/home/quentin/traceBinanry")));
-    writer2.write(traceContent.getBytes());
-    writer2.close();
-
-    val writer = new BufferedOutputStream(new FileOutputStream(new File("/home/quentin/tracepkcs7")));
-    writer.write(signedData);
-    writer.close();
+  @Test def signRemoteIntegrationTest(): Unit = {
+    val signedData = Sign.signWithRemoteTimestamp(traceContent.getBytes())
+    val writer3 = new BufferedOutputStream(new FileOutputStream(new File("/home/quentin/tracepkcs7Universign")));
+    writer3.write(signedData);
+    writer3.close();
 
     Assert.assertTrue(Sign.verifySign(traceContent.getBytes(), signedData))
     Assert.assertFalse(Sign.verifySign(("t" + traceContent).getBytes(), signedData))
 
   }
-
 }

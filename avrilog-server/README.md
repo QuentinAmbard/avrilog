@@ -80,6 +80,10 @@ more info here : http://blog.didierstevens.com/2008/12/30/howto-make-your-own-ce
 
 ####Generating you own timestamp certificate file :
 
+edit your openssl.cnf file, and uncomment (add) the following line on the [ usr_cert ] part:
+
+    extendedKeyUsage = critical,timeStamping
+
 generate CA (need to do it only once)
 
     /usr/lib/ssl/misc/CA.sh -newca

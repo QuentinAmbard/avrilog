@@ -53,6 +53,8 @@ import org.bouncycastle.cert.X509CertificateHolder
 import org.bouncycastle.cms.CMSSignedDataParser
 import org.bouncycastle.cms.CMSTypedStream
 import org.bouncycastle.cms.CMSSignerDigestMismatchException
+import org.bouncycastle.tsp.TSPValidationException
+import org.bouncycastle.tsp.TSPException
 
 object Sign extends Hash {
   val logger = LoggerFactory.getLogger(Sign.getClass())
@@ -64,11 +66,15 @@ object Sign extends Hash {
   val TSA_POLICY_ID = "1.3.6.1.4.1.3029.54.11940.54"
   val tsaPolicyId = new ASN1ObjectIdentifier(TSA_POLICY_ID)
   val config = ConfigFactory.load()
-  val pkcs12Path = config.getString("pkcs12.path")
-  val pkcsTsa12Path = config.getString("pkcs12.tsa.path")
-  val algo = config.getString("pkcs12.algo")
+  val pkcs12Path = config.getString("integrity.sign.path")
+  val pkcsTsa12Path = config.getString("integrity.tsa.path")
+
+  val includeSignCert = config.getBoolean("integrity.sign.includeCert")
+  val includeTsaCert = config.getBoolean("integrity.tsa.includeCert")
+
+  val algo = config.getString("integrity.algo")
   val signatureAlgorithm = algo + "withRSA"
-  val providerName = "BC"
+  val providerName = config.getString("integrity.providerName")
 
   //Match the correct algo (get the associated OID)
   val timestampTSPAlgorithms = algo match {
@@ -85,17 +91,21 @@ object Sign extends Hash {
     val conf = config.getString(str)
     if (conf == "") null else conf.toCharArray()
   }
-  val pkcs12Password = getEmptyStringAsNull("pkcs12.password")
-  val privateKeyPassword = getEmptyStringAsNull("pkcs12.pkeyPassword")
+  val pkcs12Password = getEmptyStringAsNull("integrity.sign.password")
+  val privateKeyPassword = getEmptyStringAsNull("integrity.sign.pkeyPassword")
+
+  val pkcs12TsaPassword = getEmptyStringAsNull("integrity.tsa.password")
+  val privateKeyTsaPassword = getEmptyStringAsNull("integrity.tsa.pkeyPassword")
 
   Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider())
 
   val signKeyStore = new KeyStore(pkcs12Path, pkcs12Password, privateKeyPassword, providerName)
-  val timestampKeyStore = new KeyStore(pkcsTsa12Path, pkcs12Password, privateKeyPassword, providerName)
+  val timestampKeyStore = new KeyStore(pkcsTsa12Path, pkcs12TsaPassword, privateKeyTsaPassword, providerName)
+
   /**
    * Sign the input and add a timestamp on the signed data.
    */
-  def signWithTimestamp(input: Array[Byte]): Array[Byte] = {
+  def signWithRemoteTimestamp(input: Array[Byte]): Array[Byte] = {
     val signedData = getSignedData(input, false)
     if (signedData == null) {
       return null
@@ -132,40 +142,54 @@ object Sign extends Hash {
     signedContent.drain()
     val certStore = sign.getCertificates()
     val it = sign.getSignerInfos().getSigners().iterator()
-    //val contentVerifierProvider = new JcaContentVerifierProviderBuilder().setProvider("BC").build(signKeyStore.publickey)
     while (it.hasNext()) {
       val signer = it.next().asInstanceOf[SignerInformation]
-      val signerHash = signer.getSignature()
-      val sid = signer.getSID()
-      val certCollection = certStore.getMatches(null)
-      val certIt = certCollection.iterator()
-      val cert = certIt.next().asInstanceOf[X509CertificateHolder]
+      val certIt = certStore.getMatches(signer.getSID()).iterator()
+      val signerInfoVerifier = certIt.hasNext() match {
+        case true => new JcaSimpleSignerInfoVerifierBuilder().setProvider(providerName).build(certIt.next().asInstanceOf[X509CertificateHolder])
+        case false => new JcaSimpleSignerInfoVerifierBuilder().setProvider(providerName).build(signKeyStore.cert)
+      }
       try {
-        if (!signer.verify(new JcaSimpleSignerInfoVerifierBuilder().setProvider("BC").build(signKeyStore.cert))) {
+        if (!signer.verify(signerInfoVerifier)) {
+          logger.trace("signer isn't verified")
           return false
         }
         logger.trace("sign ok, digest match.")
       } catch {
-        case e: CMSSignerDigestMismatchException => return false
+        case e: CMSSignerDigestMismatchException => logger.trace("digest doesn't match"); return false
       }
       //Check timestamp data.
       val attrs = signer.getUnsignedAttributes()
-      if (attrs != null) {
+      if (attrs == null) {
+        logger.trace("unsigned attributes can't be found on this sign. No timestamp.")
+      } else {
         val att = attrs.get(PKCSObjectIdentifiers.id_aa_signatureTimeStampToken)
-        val t = PKCSObjectIdentifiers.id_aa_signatureTimeStampToken
-        if (att != null) {
+        if (att == null) {
+          logger.trace("timestamp can't be found on this sign (attr identifier : {})", PKCSObjectIdentifiers.id_aa_signatureTimeStampToken)
+        } else {
           val dob = att.getAttrValues().getObjectAt(0)
           val tto = new TimeStampToken(new CMSSignedData(dob.getDERObject().getEncoded()))
+          val tsaCertIt = tto.getCertificates().getMatches(tto.getSID()).iterator()
+          val tsaSignerInfoVerifier = tsaCertIt.hasNext() match {
+            case true => new JcaSimpleSignerInfoVerifierBuilder().setProvider(providerName).build(tsaCertIt.next().asInstanceOf[X509CertificateHolder])
+            case i if i == false && tto.getSID().getSerialNumber() == timestampKeyStore.cert.getSerialNumber() => new JcaSimpleSignerInfoVerifierBuilder().setProvider(providerName).build(timestampKeyStore.cert)
+            case _ => logger.trace("can't find any certificate included in timestamp. Won't check the certificate integrity"); null
+          }
+          if (tsaSignerInfoVerifier != null) {
+            try {
+              tto.validate(tsaSignerInfoVerifier)
+            } catch {
+              case e: TSPException => logger.error("error while processing token", e); return false
+              case e: TSPValidationException => logger.trace("timestamp is invalid", e); return false
+            }
+          }
           val digest = tto.getTimeStampInfo().getMessageImprintDigest()
-          if (tto.getTimeStampInfo().getMessageImprintDigest().deep != signer.getSignature().deep) {
+          if (tto.getTimeStampInfo().getMessageImprintDigest().deep != getRawHash(signer.getSignature(), algo).deep) {
+            logger.trace("timestamp digest doesn't match")
             return false
           }
           logger.trace("timestamp digest match")
-        } else {
-          logger.trace("timestamp can't be found on this sign ({})", PKCSObjectIdentifiers.id_aa_signatureTimeStampToken)
         }
-      } else {
-        logger.trace("unsigned attributes can't be found on this sign ")
       }
     }
     true
@@ -180,7 +204,9 @@ object Sign extends Hash {
       val sha1Signer = new JcaContentSignerBuilder(signatureAlgorithm).setProvider(providerName).build(signKeyStore.privatekey).asInstanceOf[ContentSigner]
       val signerInfo = new JcaSignerInfoGeneratorBuilder(new JcaDigestCalculatorProviderBuilder().setProvider(providerName).build()).build(sha1Signer, signKeyStore.cert)
       val signGen = new CMSSignedDataGenerator()
-      signGen.addCertificates(signKeyStore.store)
+      if (includeSignCert) {
+        signGen.addCertificates(signKeyStore.store)
+      }
       signGen.addSignerInfoGenerator(signerInfo)
       val content = new CMSProcessableByteArray(input)
       val signedData = signGen.generate(content)
@@ -188,11 +214,17 @@ object Sign extends Hash {
         val tsaSigner = new JcaContentSignerBuilder(signatureAlgorithm).setProvider(providerName).build(timestampKeyStore.privatekey).asInstanceOf[ContentSigner]
         val tsaSignerInfo = new JcaSignerInfoGeneratorBuilder(new JcaDigestCalculatorProviderBuilder().setProvider(providerName).build()).build(tsaSigner, timestampKeyStore.cert)
         val reqGen = new TimeStampRequestGenerator()
+        if (includeTsaCert) {
+          reqGen.setCertReq(true)
+        }
         val signers = signedData.getSignerInfos().getSigners()
         val firstSigner = signers.iterator().next().asInstanceOf[SignerInformation]
         val rand = new Random()
-        val timestampRequest = reqGen.generate(timestampTSPAlgorithms, firstSigner.getSignature())
+        val timestampRequest = reqGen.generate(timestampTSPAlgorithms, getRawHash(firstSigner.getSignature(), algo))
         val timestampGenerator = new TimeStampTokenGenerator(tsaSignerInfo, tsaPolicyId)
+        if (includeTsaCert) {
+          timestampGenerator.addCertificates(timestampKeyStore.store)
+        }
         val timestamp = timestampGenerator.generate(timestampRequest, BigInteger.valueOf(rand.nextLong()), new Date())
         val signedDataWithTimestamp = addTimestampToSign(timestamp.getEncoded(), signedData, firstSigner)
         signedDataWithTimestamp

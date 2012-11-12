@@ -23,16 +23,21 @@ object Timestamping extends Hash {
   val logger = LoggerFactory.getLogger(Timestamping.getClass())
 
   val config = ConfigFactory.load()
-  val url = config.getString("timestamping.url")
-  val useBasicAuth = config.getBoolean("timestamping.useBasicAuth")
-  val method = config.getString("timestamping.method")
-  val contentType = config.getString("timestamping.contentType")
-  val encoding = config.getString("timestamping.encoding")
-  val username = config.getString("timestamping.username")
-  val password = config.getString("timestamping.password")
-  val exchange = config.getString("timestamping.exchange")
-  val algo = config.getString("timestamping.algo")
-  val rawParams = interpolate(config.getString("timestamping.params"), Map("timestamping.algo" -> algo, "timestamping.encoding" -> encoding, "timestamping.exchange" -> exchange, "timestamping.password" -> password, "timestamping.username" -> username))
+  val url = config.getString("integrity.remoteTimestamping.url")
+  val useBasicAuth = config.getBoolean("integrity.remoteTimestamping.useBasicAuth")
+  val method = config.getString("integrity.remoteTimestamping.method")
+  val contentType = config.getString("integrity.remoteTimestamping.contentType")
+  val encoding = config.getString("integrity.remoteTimestamping.encoding")
+  val username = config.getString("integrity.remoteTimestamping.username")
+  val password = config.getString("integrity.remoteTimestamping.password")
+  val exchange = config.getString("integrity.remoteTimestamping.exchange")
+  val algo = config.getString("integrity.algo")
+  val rawParams = interpolate(config.getString("integrity.remoteTimestamping.params"), Map(
+    "integrity.algo" -> algo,
+    "integrity.remoteTimestamping.encoding" -> encoding,
+    "integrity.remoteTimestamping.exchange" -> exchange,
+    "integrity.remoteTimestamping.password" -> password,
+    "integrity.remoteTimestamping.username" -> username))
 
   val authString = username + ":" + password;
   val authStringEnc = Base64.encodeBase64URLSafeString(authString.getBytes());
