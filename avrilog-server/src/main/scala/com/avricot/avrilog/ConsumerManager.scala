@@ -11,7 +11,7 @@ import akka.util.Timeout
 class ConsumerManager(f: (Message) => Any, queue: String) extends Actor with ActorLogging {
   def receive = {
     case Error => {
-      log.info("oops, consumer crashed !")
+      log.info("oops, consumer crashed ! Scheduling restart in 5 seconds...")
       ActorSystem().scheduler.scheduleOnce(5 seconds, self, Start)
     }
     case Start => {

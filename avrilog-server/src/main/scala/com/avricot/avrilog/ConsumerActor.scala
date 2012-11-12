@@ -41,8 +41,9 @@ class ConsumerActor(queuName: String, f: (Message) => Any) extends Actor with Ac
           context.actorOf(Props(new Actor {
             def receive = {
               case msg: Message => {
+                //execute the action, catch and log any kind of exception (actor musn't stop listening)
                 try { f(msg) } catch {
-                  case e: Exception => log.error(e, "can't parse message")
+                  case e: Throwable => log.error(e, "can't parse message")
                 }
               }
               case _ => log.error("unkonwn message")
