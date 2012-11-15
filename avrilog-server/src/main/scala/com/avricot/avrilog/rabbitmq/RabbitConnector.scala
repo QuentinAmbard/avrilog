@@ -1,7 +1,6 @@
-package com.avricot.avrilog
+package com.avricot.avrilog.rabbitmq
 
 import com.rabbitmq.client.ConnectionFactory
-import com.rabbitmq.client.Connection
 
 object RabbitConnector {
   val factory = new ConnectionFactory()

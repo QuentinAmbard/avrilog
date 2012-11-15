@@ -1,22 +1,21 @@
-package com.avricot.avrilog
+package com.avricot.avrilog.trace
 
 import akka.actor.ActorSystem
 import akka.actor.Props
-import akka.actor.Actor
-import akka.actor.Terminated
 import akka.util.duration._
-import akka.actor.ActorLogging
-import akka.pattern.ask
-import akka.util.Timeout
 import com.avricot.avrilog.model.Trace
-import com.avricot.avrilog.sign.Sign
 import com.avricot.avrilog.model.ClientTrace
-import org.joda.time.DateTime
 import org.msgpack.AvrilogMPack
-import com.avricot.avrilog.timestamp.Timestamping
 import com.avricot.avrilog.model.TraceContent
 import org.slf4j.LoggerFactory
 import java.io.IOException
+import akka.actor.actorRef2Scala
+import com.avricot.avrilog.rabbitmq.ConsumerManager
+import com.avricot.avrilog.rabbitmq.RabbitMQConfig
+import com.avricot.avrilog.rabbitmq.Message
+import com.avricot.avrilog.crypto.sign.Sign
+import com.avricot.avrilog.crypto.timestamp.Timestamping
+import com.avricot.avrilog.rabbitmq.Start
 
 class TraceConsumer {
   val logger = LoggerFactory.getLogger(classOf[TraceConsumer])

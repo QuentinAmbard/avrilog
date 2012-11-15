@@ -1,18 +1,14 @@
-package com.avricot.avrilog
+package com.avricot.avrilog.rabbitmq
 
 import com.rabbitmq.client.QueueingConsumer
 import akka.actor.Props
 import akka.actor.Actor
-import com.rabbitmq.client.AMQP
-import akka.actor.ActorSystem
 import com.rabbitmq.client.Channel
 import akka.actor.ActorLogging
 import com.rabbitmq.client.ShutdownSignalException
-import com.rabbitmq.client.Connection
-import scala.collection.mutable.HashSet
 import akka.util.duration._
 import akka.actor.ActorRef
-import scala.util.control.Exception
+import akka.actor.actorRef2Scala
 
 case class Listen
 case class Start

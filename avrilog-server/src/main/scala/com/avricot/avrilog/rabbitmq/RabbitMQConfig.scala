@@ -1,4 +1,4 @@
-package com.avricot.avrilog
+package com.avricot.avrilog.rabbitmq
 
 import com.typesafe.config.ConfigFactory
 

@@ -1,13 +1,10 @@
-package com.avricot.avrilog.sign
+package com.avricot.avrilog.crypto.sign
 
 import java.security.KeyStore
 import java.io.FileInputStream
-import java.security.Security
 import java.security.PrivateKey
 import java.security.cert.X509Certificate
 import java.util.ArrayList
-import java.security.cert.CertStore
-import java.security.cert.CollectionCertStoreParameters
 import org.bouncycastle.cert.jcajce.JcaCertStore
 
 class KeyStore(pkcs12Path: String, pkcs12Password: Array[Char], privateKeyPassword: Array[Char], providerName: String) {

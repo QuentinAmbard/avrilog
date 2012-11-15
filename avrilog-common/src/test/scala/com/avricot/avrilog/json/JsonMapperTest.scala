@@ -8,13 +8,20 @@ import junit.framework.Assert
 import scala.collection.mutable.Map
 import com.avricot.avrilog.model.Trace
 import com.avricot.avrilog.model.TraceContent
-import net.liftweb.json._
-import net.liftweb.json.Serialization.{ read, write }
 
 case class TestSer(test: TestSer2, bar: String)
-case class TestSer2(foo: String, bar: Binary, dt: DateTime)
+case class TestSer2(foo: String, bar: Binary, dt: scala.collection.Map[String, String])
 
 class JsonMapperTest {
+
+  @Test def jsonTestMap(): Unit = {
+    val t = TestSer2("ee", Binary(Array[Byte](2)), scala.collection.Map[String, String]("aa" -> "az"))
+    val traceJson2 = JsonMapper.mapper.writeValueAsString(t)
+    println(traceJson2)
+    val test3 = JsonMapper.mapper.readValue(traceJson2, classOf[TestSer2])
+    Assert.assertEquals("az", test3.dt("aa"))
+  }
+
   @Test def jsonTest(): Unit = {
     val user = User("userId", "firstname", "lastname", null, null, null)
     val d1 = new DateTime(1352282343000L)
@@ -24,15 +31,19 @@ class JsonMapperTest {
   }
 
   @Test def jsonTestMapp(): Unit = {
-    implicit val formats = Serialization.formats(NoTypeHints)
     val user = User("userId", "firstname", "lastname", null, null, null)
     val d1 = new DateTime(1352282343000L)
-    val ctrace = new TraceContent(Binary(Array[Byte](12)), null, null, null, null, false, false, null, null) //
-    val trace = Trace(ctrace)
+    val trace = Trace(new TraceContent(Binary(Array[Byte](12)), "qadeaz", "qazeaze", "aeazooo", d1, false, false, user, null, d1))
     val traceJson2 = JsonMapper.mapper.writeValueAsString(trace)
+    println(traceJson2)
     val test3 = JsonMapper.mapper.readValue(traceJson2, classOf[Trace])
     Assert.assertEquals(12, test3.content.id.bytes.head)
 
+  }
+
+  @Test def jsonMap(): Unit = {
+    val str = """{"content":{"id":"AAAAATsFa0EY","info":"info","sign":false,"horodate":false,"user":{"id":"userId","firstname":"firstname","lastname":"lastname"},"data":{"a":"aqsd"}}}"""
+    val test3 = JsonMapper.mapper.readValue(str, classOf[Trace])
   }
 
 }

@@ -1,4 +1,4 @@
-package com.avricot.avrilog.hash
+package com.avricot.avrilog.crypto.hash
 
 import java.security.MessageDigest
 import java.math.BigInteger

@@ -6,7 +6,7 @@ import org.apache.hadoop.hbase.client.Get
 import org.apache.hadoop.hbase.util.Bytes
 import org.msgpack.annotation.Message
 import org.msgpack.MessagePack
-import scala.collection.mutable.Map
+import scala.collection.Map
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.annotation.JsonInclude.Include
@@ -41,14 +41,16 @@ object Trace extends HormObject[Trace] {
   }
 }
 
-case class TraceContent(id: Binary, entityId: String, category: String, info: String, clientDate: DateTime, sign: Boolean, horodate: Boolean, user: User, data: Map[String, String], date: DateTime = null) extends JsonObj {
-  //def apply(clientTrace: ClientTrace) = (Binary(clientTrace.id), clientTrace.entityId, clientTrace.category, clientTrace.info, clientTrace.clientDate, clientTrace.sign, clientTrace.horodate, clientTrace.user, clientTrace.data, new DateTime())
-}
+case class TraceContent(id: Binary, entityId: String, category: String, info: String, clientDate: DateTime, sign: Boolean, horodate: Boolean, user: User, data: Map[String, String], date: DateTime = null) extends JsonObj
 
 /**
  * Trance content builder. Can't be defined as a constructor in the TraceContent because of json deserialization issues.
  */
 object TraceContent {
+  def apply(id: Array[Byte], entityId: String, category: String, info: String, clientDate: DateTime, sign: Boolean, horodate: Boolean, user: User, data: Map[String, String], date: DateTime) = {
+    new TraceContent(Binary(id), entityId, category, info, clientDate, sign, horodate, user, data, date)
+  }
+
   def apply(clientTrace: ClientTrace) = {
     new TraceContent(Binary(clientTrace.id), clientTrace.entityId, clientTrace.category, clientTrace.info, clientTrace.clientDate, clientTrace.sign, clientTrace.horodate, clientTrace.user, clientTrace.data, new DateTime())
   }

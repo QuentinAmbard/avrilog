@@ -4,6 +4,8 @@ import org.junit.Assert
 import java.io.BufferedOutputStream
 import java.io.FileOutputStream
 import java.io.File
+import com.avricot.avrilog.crypto.sign.Sign
+import com.avricot.avrilog.crypto.sign.VerificationStatus
 
 class RemoteSignIntegrationTest {
   val traceContent = """{"id":"DA==","info":"info","clientDate":"2012-11-07T10:59:03.000+01:00","sign":false,"horodate":false,"user":{"id":"userId","firstname":"firstname","lastname":"lastname"},"data":{"a":"aqsd"}}"""

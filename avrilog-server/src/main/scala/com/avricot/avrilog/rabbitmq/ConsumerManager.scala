@@ -1,12 +1,9 @@
-package com.avricot.avrilog
+package com.avricot.avrilog.rabbitmq
 import akka.actor.ActorSystem
 import akka.actor.Props
 import akka.actor.Actor
-import akka.actor.Terminated
 import akka.util.duration._
 import akka.actor.ActorLogging
-import akka.pattern.ask
-import akka.util.Timeout
 
 class ConsumerManager(f: (Message) => Any, queue: String) extends Actor with ActorLogging {
   def receive = {

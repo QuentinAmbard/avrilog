@@ -5,6 +5,7 @@ import java.io.BufferedOutputStream
 import java.io.FileOutputStream
 import java.io.File
 import com.avricot.avrilog.json.JsonMapper
+import com.avricot.avrilog.crypto.sign.VerificationInfo
 
 class VerificationInfoTest {
 

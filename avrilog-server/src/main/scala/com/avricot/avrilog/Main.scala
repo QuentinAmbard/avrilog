@@ -14,6 +14,7 @@ import com.typesafe.config.ConfigFactory
 import org.slf4j.LoggerFactory
 import com.avricot.horm.HormConfig
 import com.avricot.avrilog.model.Trace
+import com.avricot.avrilog.trace.TraceConsumer
 
 object Main {
   def logger = LoggerFactory.getLogger(Main.getClass())

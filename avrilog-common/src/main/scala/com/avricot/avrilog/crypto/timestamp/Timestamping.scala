@@ -1,23 +1,19 @@
-package com.avricot.avrilog.timestamp
+package com.avricot.avrilog.crypto.timestamp
 
 import com.typesafe.config.ConfigFactory
 import org.apache.commons.codec.binary.Base64
 import java.net.HttpURLConnection
 import java.net.URL
-import java.security.MessageDigest
-import java.math.BigInteger
 import java.net.URLEncoder
-import sun.misc.IOUtils
 import scalax.io.Resource
-import com.avricot.avrilog.hash.Hash
 import java.io.BufferedOutputStream
 import java.io.FileOutputStream
 import java.io.File
-import java.io.FileInputStream
 import org.bouncycastle.cms.CMSSignedData
 import org.bouncycastle.tsp.TimeStampToken
 import org.slf4j.LoggerFactory
 import java.io.IOException
+import com.avricot.avrilog.crypto.hash.Hash
 
 object Timestamping extends Hash {
   val logger = LoggerFactory.getLogger(Timestamping.getClass())

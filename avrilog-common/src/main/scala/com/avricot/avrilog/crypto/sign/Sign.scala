@@ -1,38 +1,24 @@
-package com.avricot.avrilog.sign
+package com.avricot.avrilog.crypto.sign
 
 import java.util.ArrayList
 import org.bouncycastle.cms.CMSProcessableByteArray
-import org.bouncycastle.cert.jcajce.JcaCertStore
-import java.io.FileInputStream
 import java.security.Security
-import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.bouncycastle.cms.CMSSignedDataGenerator
-import java.security.cert.Certificate
-import java.io.IOException
-import java.util.Arrays
-import java.security.cert.CertStore
-import java.security.cert.CollectionCertStoreParameters
-import java.security.PrivateKey
 import org.bouncycastle.cms.jcajce.JcaSignerInfoGeneratorBuilder
-import java.security.cert.X509Certificate
 import java.io.ByteArrayInputStream
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder
 import org.bouncycastle.operator.ContentSigner
-import javax.security.cert.CertificateEncodingException
 import org.bouncycastle.cms.SignerInformation
-import com.avricot.avrilog.timestamp.Timestamping
 import org.bouncycastle.cms.CMSSignedData
 import org.bouncycastle.tsp.TimeStampToken
 import org.bouncycastle.asn1.ASN1InputStream
 import org.bouncycastle.asn1.DERSet
 import org.bouncycastle.asn1.ASN1EncodableVector
-import java.util.Hashtable
 import org.bouncycastle.asn1.cms.AttributeTable
 import org.bouncycastle.asn1.DERObjectIdentifier
 import org.bouncycastle.cms.SignerInformationStore
 import com.typesafe.config.ConfigFactory
-import com.avricot.avrilog.hash.Hash
 import org.bouncycastle.asn1.cms.Attribute
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers
 import org.slf4j.LoggerFactory
@@ -43,11 +29,7 @@ import org.bouncycastle.tsp.TSPAlgorithms
 import java.math.BigInteger
 import java.util.Random
 import java.util.Date
-import org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder
-import org.bouncycastle.cms.bc.BcRSASignerInfoVerifierBuilder
-import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder
-import org.bouncycastle.operator.bc.BcDigestCalculatorProvider
 import org.bouncycastle.cert.X509CertificateHolder
 import org.bouncycastle.cms.CMSSignedDataParser
 import org.bouncycastle.cms.CMSTypedStream
@@ -55,6 +37,8 @@ import org.bouncycastle.cms.CMSSignerDigestMismatchException
 import org.bouncycastle.tsp.TSPValidationException
 import org.bouncycastle.tsp.TSPException
 import scala.collection.mutable.StringBuilder
+import com.avricot.avrilog.crypto.hash.Hash
+import com.avricot.avrilog.crypto.timestamp.Timestamping
 
 object Sign extends Hash {
   val logger = LoggerFactory.getLogger(Sign.getClass())

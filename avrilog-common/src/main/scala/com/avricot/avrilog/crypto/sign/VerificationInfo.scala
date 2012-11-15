@@ -1,4 +1,4 @@
-package com.avricot.avrilog.sign
+package com.avricot.avrilog.crypto.sign
 
 object VerificationStatus extends Enumeration {
   type VerificationStatus = Value
