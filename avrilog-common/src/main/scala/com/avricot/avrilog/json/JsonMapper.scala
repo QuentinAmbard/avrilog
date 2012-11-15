@@ -7,7 +7,10 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 object JsonMapper {
   val mapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL)
     .registerModule(DefaultScalaModule)
-    .registerModule(JodaTimeModule)
+    .registerModule(AvrilogModule)
+  val nullMapper = new ObjectMapper()
+    .registerModule(DefaultScalaModule)
+    .registerModule(AvrilogModule)
 }
 
 trait JsonObj {

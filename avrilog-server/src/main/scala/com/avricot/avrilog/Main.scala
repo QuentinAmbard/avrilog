@@ -21,6 +21,8 @@ object Main {
     logger.info("start avrilog server")
     println("damn,")
     val config = ConfigFactory.load()
+
+    HormConfig.init(config.getString("hbase.zookeeper.quorum"), config.getInt("hbase.zookeeper.property.clientPort"))
     if (config.getBoolean("hbase.checkSchemaOnStartup")) {
       HormConfig.initTable(classOf[Trace])
     }

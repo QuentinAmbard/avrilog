@@ -11,21 +11,19 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.jsontype.TypeDeserializer
 
-object DateTimeSerializer extends StdSerializer[DateTime](classOf[DateTime]) {
+object ByteArrayDeserializer extends StdDeserializer[Binary](classOf[Binary]) {
   val isoFormatter = ISODateTimeFormat.dateTime();
-  override def serialize(value: DateTime, gen: JsonGenerator, arg2: SerializerProvider) = {
-    gen.writeString(isoFormatter.print(value))
-  }
 
-  override def getSchema(provider: SerializerProvider, typeHint: java.lang.reflect.Type): JsonNode = {
-    createSchemaNode("string", true);
+  override def deserialize(jp: JsonParser, ctxt: DeserializationContext) = {
+    Binary(jp.getBinaryValue())
   }
 }
 
-object DateTimeDeserializer extends StdDeserializer[DateTime](classOf[DateTime]) {
+object ByteArraySerializer extends StdSerializer[Binary](classOf[Binary]) {
   val isoFormatter = ISODateTimeFormat.dateTime();
-  override def deserialize(jp: JsonParser, ctxt: DeserializationContext) = {
-    isoFormatter.parseDateTime(jp.getValueAsString())
+
+  override def serialize(value: Binary, gen: JsonGenerator, arg2: SerializerProvider) = {
+    gen.writeBinary(value.bytes)
   }
 }
 

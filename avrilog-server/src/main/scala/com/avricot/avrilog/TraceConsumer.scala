@@ -29,13 +29,13 @@ class TraceConsumer {
         case e: IOException => logger.error("error trying to ack the msg. rabbitMQ is probably down.", e); return
       }
       val clientTrace = AvrilogMPack.read[ClientTrace](msg.body);
-      val traceContent = new TraceContent(clientTrace)
+      val traceContent = TraceContent(clientTrace)
       val traceContentBytes = traceContent.toJson.getBytes()
       try {
         val trace = clientTrace match {
-          case c if c.sign && c.horodate => Trace(traceContent, signContent = Sign.signWithRemoteTimestamp(traceContentBytes))
-          case c if c.sign => Trace(traceContent, signContent = Sign.sign(traceContentBytes))
-          case c if c.horodate => Trace(traceContent, timestampingContent = Timestamping.timestamp(traceContentBytes))
+          case c if c.sign && c.horodate => Trace(traceContent, Sign.signWithRemoteTimestamp(traceContentBytes), null)
+          case c if c.sign => Trace(traceContent, Sign.sign(traceContentBytes), null)
+          case c if c.horodate => Trace(traceContent, null, Timestamping.timestamp(traceContentBytes))
         }
         try {
           Trace.save(trace)

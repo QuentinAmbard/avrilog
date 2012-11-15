@@ -24,6 +24,7 @@ libraryDependencies ++= Seq(
     "com.fasterxml.jackson.datatype" % "jackson-datatype-joda" % "2.1.0"  withSources() ,
 	"com.typesafe" % "config" % "0.6.0" withSources() ,
 	"org.msgpack" %% "msgpack-scala" % "0.6.6"  withSources()  ,
+	//"net.liftweb" %% "lift-json" % "2.4",
 	"com.avricot" %% "horm" % "0.1" withSources() )
 
 

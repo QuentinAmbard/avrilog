@@ -19,9 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.core.Version
 import com.avricot.avrilog.json.DateTimeSerializer
-import com.fasterxml.jackson.datatype.joda.JodaModule
-import com.avricot.avrilog.json.JodaTimeModule
-import com.avricot.avrilog.json.JsonMapper
 
 class SerializationTest {
 
@@ -40,6 +37,6 @@ class SerializationTest {
     Assert.assertEquals("lastname", newTrace.user.lastname)
     Assert.assertEquals("email", newTrace.user.email)
     Assert.assertEquals("groupId", newTrace.user.groupId)
-
   }
+
 }

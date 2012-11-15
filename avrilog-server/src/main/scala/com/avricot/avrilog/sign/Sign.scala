@@ -3,7 +3,6 @@ package com.avricot.avrilog.sign
 import java.util.ArrayList
 import org.bouncycastle.cms.CMSProcessableByteArray
 import org.bouncycastle.cert.jcajce.JcaCertStore
-import java.security.KeyStore
 import java.io.FileInputStream
 import java.security.Security
 import org.bouncycastle.jce.provider.BouncyCastleProvider
