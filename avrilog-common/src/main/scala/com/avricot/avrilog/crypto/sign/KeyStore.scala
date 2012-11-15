@@ -1,6 +1,5 @@
 package com.avricot.avrilog.crypto.sign
 
-import java.security.KeyStore
 import java.io.FileInputStream
 import java.security.PrivateKey
 import java.security.cert.X509Certificate
@@ -9,7 +8,7 @@ import org.bouncycastle.cert.jcajce.JcaCertStore
 
 class KeyStore(pkcs12Path: String, pkcs12Password: Array[Char], privateKeyPassword: Array[Char], providerName: String) {
   val classPathConfig = "classpath:"
-  val keystore = KeyStore.getInstance("PKCS12")
+  val keystore = java.security.KeyStore.getInstance("PKCS12")
   val in = pkcs12Path match {
     case path if path.startsWith("classpath:") => this.getClass().getClassLoader().getResourceAsStream(pkcs12Path.substring(classPathConfig.size))
     case _ => new FileInputStream(pkcs12Path)
