@@ -25,7 +25,7 @@ class JsonMapperTest {
   @Test def jsonTest(): Unit = {
     val user = User("userId", "firstname", "lastname", null, null, null)
     val d1 = new DateTime(1352282343000L)
-    val ctrace = new ClientTrace(Array[Byte](12), null, null, "info", d1, false, false, user, Map[String, String]("a" -> "aqsd")) //
+    val ctrace = new ClientTrace(Array[Byte](12), null, null, null, "info", d1, false, false, user, Map[String, String]("a" -> "aqsd")) //
     val test2 = JsonMapper.mapper.writeValueAsString(ctrace)
     Assert.assertEquals("""{"id":"DA==","info":"info","clientDate":"2012-11-07T10:59:03.000+01:00","sign":false,"horodate":false,"user":{"id":"userId","firstname":"firstname","lastname":"lastname"},"data":{"a":"aqsd"}}""", test2)
   }
@@ -33,7 +33,7 @@ class JsonMapperTest {
   @Test def jsonTestMapp(): Unit = {
     val user = User("userId", "firstname", "lastname", null, null, null)
     val d1 = new DateTime(1352282343000L)
-    val trace = Trace(new TraceContent(Binary(Array[Byte](12)), "qadeaz", "qazeaze", "aeazooo", d1, false, false, user, null, d1))
+    val trace = Trace(new TraceContent(Binary(Array[Byte](12)), null, "qadeaz", "qazeaze", "aeazooo", d1, false, false, user, null, d1))
     val traceJson2 = JsonMapper.mapper.writeValueAsString(trace)
     println(traceJson2)
     val test3 = JsonMapper.mapper.readValue(traceJson2, classOf[Trace])

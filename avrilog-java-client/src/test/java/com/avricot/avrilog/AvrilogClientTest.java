@@ -7,6 +7,8 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.msgpack.MessagePack;
 
+import com.avricot.avrilog.trace.Trace;
+
 public class AvrilogClientTest {
     @Test
     public void testSerialization() throws IOException {

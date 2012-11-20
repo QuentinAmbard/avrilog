@@ -19,6 +19,7 @@ object Timestamping extends Hash {
   val logger = LoggerFactory.getLogger(Timestamping.getClass())
 
   val config = ConfigFactory.load()
+  val activated = config.getBoolean("integrity.remoteTimestamping.activated")
   val url = config.getString("integrity.remoteTimestamping.url")
   val useBasicAuth = config.getBoolean("integrity.remoteTimestamping.useBasicAuth")
   val method = config.getString("integrity.remoteTimestamping.method")
@@ -45,6 +46,9 @@ object Timestamping extends Hash {
   }
 
   def timestamp(b: Array[Byte]): Array[Byte] = {
+    if (!activated) {
+      return null
+    }
     try {
       val hash = getHash(b, algo)
       val parameters = interpolate(rawParams, Map("hash" -> hash))

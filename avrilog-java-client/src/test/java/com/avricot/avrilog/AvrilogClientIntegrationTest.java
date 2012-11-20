@@ -3,6 +3,7 @@ package com.avricot.avrilog;
 import org.junit.Test;
 
 import com.avricot.avrilog.rabbitmq.RabbitMQReconnectionException;
+import com.avricot.avrilog.trace.Trace;
 
 public class AvrilogClientIntegrationTest {
     /**
@@ -13,7 +14,7 @@ public class AvrilogClientIntegrationTest {
     @Test
     public void initBrokerDown() {
         try {
-            AvrilogClient.init();
+            AvrilogClient.init("test");
             AvrilogClient.trace(getTrace("t"));
         } catch (RabbitMQReconnectionException e) {
             e.printStackTrace();
@@ -32,7 +33,7 @@ public class AvrilogClientIntegrationTest {
      */
     @Test
     public void init() {
-        AvrilogClient.init();
+        AvrilogClient.init("test");
         AvrilogClient.trace(getTrace("test"));
     }
 
@@ -41,7 +42,7 @@ public class AvrilogClientIntegrationTest {
      */
     @Test
     public void reconnection() {
-        AvrilogClient.init();
+        AvrilogClient.init("test");
         for (int i = 0; i < 25; i++) {
             try {
                 Thread.sleep(1000);

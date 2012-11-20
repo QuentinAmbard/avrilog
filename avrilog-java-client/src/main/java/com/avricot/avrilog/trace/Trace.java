@@ -1,4 +1,4 @@
-package com.avricot.avrilog;
+package com.avricot.avrilog.trace;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -6,9 +6,13 @@ import java.util.Map;
 
 import org.msgpack.annotation.Message;
 
+import com.avricot.avrilog.IdGenerator;
+import com.avricot.avrilog.User;
+
 @Message
 public class Trace {
     private byte[] id;
+    private String applicationName;
     private String entityId;
     private String category;
     private String info;
@@ -84,6 +88,42 @@ public class Trace {
         return this;
     }
 
+    public boolean isSign() {
+        return sign;
+    }
+
+    public Trace setSign(final boolean sign) {
+        this.sign = sign;
+        return null;
+    }
+
+    public boolean isHorodate() {
+        return horodate;
+    }
+
+    public Trace setHorodate(final boolean horodate) {
+        this.horodate = horodate;
+        return null;
+    }
+
+    public String getEntityId() {
+        return entityId;
+    }
+
+    public Trace setEntityId(final String entityId) {
+        this.entityId = entityId;
+        return null;
+    }
+
+    public String getApplicationName() {
+        return applicationName;
+    }
+
+    public Trace setApplicationName(final String applicationName) {
+        this.applicationName = applicationName;
+        return null;
+    }
+
     @Override
     public String toString() {
         return "Trace [category=" + category + ", info=" + info + ", clientDate=" + clientDate + ", user=" + user + "]";
@@ -114,37 +154,4 @@ public class Trace {
         }
         return true;
     }
-
-    // public long getDate() {
-    // return date;
-    // }
-    //
-    // public void setDate(final long date) {
-    // this.date = date;
-    // }
-
-    public boolean isSign() {
-        return sign;
-    }
-
-    public void setSign(final boolean sign) {
-        this.sign = sign;
-    }
-
-    public boolean isHorodate() {
-        return horodate;
-    }
-
-    public void setHorodate(final boolean horodate) {
-        this.horodate = horodate;
-    }
-
-    public String getEntityId() {
-        return entityId;
-    }
-
-    public void setEntityId(final String entityId) {
-        this.entityId = entityId;
-    }
-
 }

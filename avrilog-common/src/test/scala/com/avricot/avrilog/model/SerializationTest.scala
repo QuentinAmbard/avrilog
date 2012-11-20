@@ -26,7 +26,7 @@ class SerializationTest {
   def testSerialization() = {
     val user = User("userId", "firstname", "lastname", "email", "groupId", "ip")
     val d1 = new DateTime(15654564L)
-    val trace = new ClientTrace(Array[Byte](12), null, "category", "info", d1, false, false, user, Map[String, String]("a" -> "aqsd")) //
+    val trace = new ClientTrace(Array[Byte](12), null, null, "category", "info", d1, false, false, user, Map[String, String]("a" -> "aqsd")) //
     val b = trace.serialize
     val newTrace = AvrilogMPack.read[ClientTrace](b)
     Assert.assertEquals("category", newTrace.category)

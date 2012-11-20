@@ -23,7 +23,7 @@ class TraceConsumer {
   def handleTrance(msg: Message): Unit = {
     try {
       try {
-        msg.sendAck();
+        //msg.sendAck();
       } catch {
         case e: IOException => logger.error("error trying to ack the msg. rabbitMQ is probably down.", e); return
       }
@@ -35,6 +35,7 @@ class TraceConsumer {
           case c if c.sign && c.horodate => Trace(traceContent, Sign.signWithRemoteTimestamp(traceContentBytes), null)
           case c if c.sign => Trace(traceContent, Sign.sign(traceContentBytes), null)
           case c if c.horodate => Trace(traceContent, null, Timestamping.timestamp(traceContentBytes))
+          case _ => Trace(traceContent)
         }
         try {
           Trace.save(trace)
@@ -49,5 +50,5 @@ class TraceConsumer {
     }
   }
   val system = ActorSystem()
-  system.actorOf(Props(new ConsumerManager(handleTrance, RabbitMQConfig.queue))) ! Start
+  system.actorOf(Props(new ConsumerManager(RabbitMQConfig.Trace.queue, RabbitMQConfig.Trace.durable, RabbitMQConfig.Trace.exclusive, RabbitMQConfig.Trace.autodelete, RabbitMQConfig.Trace.haConfig, handleTrance))) ! Start
 }

@@ -5,15 +5,11 @@ import java.security.PrivateKey
 import java.security.cert.X509Certificate
 import java.util.ArrayList
 import org.bouncycastle.cert.jcajce.JcaCertStore
+import com.avricot.avrilog.util.FileUtil
 
 class KeyStore(pkcs12Path: String, pkcs12Password: Array[Char], privateKeyPassword: Array[Char], providerName: String) {
-  val classPathConfig = "classpath:"
   val keystore = java.security.KeyStore.getInstance("PKCS12")
-  val in = pkcs12Path match {
-    case path if path.startsWith("classpath:") => this.getClass().getClassLoader().getResourceAsStream(pkcs12Path.substring(classPathConfig.size))
-    case _ => new FileInputStream(pkcs12Path)
-  }
-  keystore.load(in, pkcs12Password);
+  keystore.load(FileUtil.getInputStream(pkcs12Path), pkcs12Password);
 
   val aliasesEnum = keystore.aliases()
   def findAlias(): String = {

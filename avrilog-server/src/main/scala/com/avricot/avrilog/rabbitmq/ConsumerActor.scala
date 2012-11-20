@@ -9,6 +9,7 @@ import com.rabbitmq.client.ShutdownSignalException
 import akka.util.duration._
 import akka.actor.ActorRef
 import akka.actor.actorRef2Scala
+import java.util.Map
 
 case class Listen
 case class Start
@@ -16,7 +17,7 @@ case class Error
 
 case class Message(body: Array[Byte], deliveryTag: Long, channel: Channel, actorRef: ActorRef) { def sendAck() = channel.basicAck(deliveryTag, false) }
 
-class ConsumerActor(queuName: String, f: (Message) => Any) extends Actor with ActorLogging {
+class ConsumerActor(queuName: String, durable: Boolean, exclusive: Boolean, autodelete: Boolean, params: Map[String, Object], f: (Message) => Any) extends Actor with ActorLogging {
   def receive = {
     case Listen => {
       try {
@@ -24,8 +25,8 @@ class ConsumerActor(queuName: String, f: (Message) => Any) extends Actor with Ac
         val channel = connection.createChannel()
         log.info("enter receging")
         val consumer = new QueueingConsumer(channel)
-        channel.queueDeclare(queuName, true, false, false, null)
-        channel.basicConsume(queuName, false, consumer)
+        channel.queueDeclare(queuName, durable, exclusive, autodelete, params)
+        channel.basicConsume(queuName, true, consumer)
         log.info("queue {} declared and consumed", queuName)
         while (true) {
           // wait for the message

@@ -16,8 +16,8 @@ case class User(var id: String, var firstname: String, var lastname: String, var
 /**
  * Client trace, built from clients message (compressed with msg pack)
  */
-case class ClientTrace(var id: Array[Byte], var entityId: String, var category: String, var info: String, var clientDate: DateTime, var sign: Boolean, var horodate: Boolean, var user: User, var data: Map[String, String]) { //
-  def this() = this(null, null, null, null, null, false, false, null, Map[String, String]()) //
+case class ClientTrace(var id: Array[Byte], var applicationName: String, var entityId: String, var category: String, var info: String, var clientDate: DateTime, var sign: Boolean, var horodate: Boolean, var user: User, var data: Map[String, String]) { //
+  def this() = this(null, null, null, null, null, null, false, false, null, Map[String, String]()) //
   def serialize(): Array[Byte] = {
     AvrilogMPack.write(this)
   }

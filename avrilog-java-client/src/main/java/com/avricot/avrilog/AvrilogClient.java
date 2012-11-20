@@ -1,7 +1,9 @@
 package com.avricot.avrilog;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.msgpack.MessagePack;
@@ -11,6 +13,9 @@ import org.slf4j.LoggerFactory;
 import com.avricot.avrilog.rabbitmq.ConnectionListener;
 import com.avricot.avrilog.rabbitmq.HaConnectionFactory;
 import com.avricot.avrilog.rabbitmq.RabbitMQException;
+import com.avricot.avrilog.trace.Trace;
+import com.avricot.avrilog.trace.TraceException;
+import com.avricot.avrilog.trace.TraceListener;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.MessageProperties;
@@ -21,6 +26,9 @@ public class AvrilogClient {
     private static boolean confirmTrace = true;
     private final static Map<String, Map<String, Object>> queurArgs = new HashMap<String, Map<String, Object>>();
     private static HaConnectionFactory factory;
+    private static String applicationName;
+    private static List<TraceListener> traceListeners = new ArrayList<TraceListener>();
+    private static MessagePack msgpack = new MessagePack();
 
     public static boolean isConfirmTrace() {
         return confirmTrace;
@@ -40,7 +48,7 @@ public class AvrilogClient {
      * Add the given args to the trace queue. Useful for ha, for example :
      * <code>
      * Map<String, Object> args = new HashMap<String, Object>();
-     * args.put("x-ha-policy", "all");
+     * args.put("ha-mode", "all");
      * AvrilogClient.addTraceQueueArgs(args)
      * </code>
      */
@@ -55,15 +63,45 @@ public class AvrilogClient {
         queurArgs.get(queueName).putAll(args);
     }
 
-    public static void init() throws RabbitMQException {
+    public static void addTraceListener(final TraceListener listener) {
+        traceListeners.add(listener);
+    }
+
+    /**
+     * Init rabbitmq factory with default values.
+     */
+    public static void init(final String applicationName) throws RabbitMQException {
+        init(applicationName, null, null, null, null, null);
+    }
+
+    /**
+     * Init rabbitmq factory with custom values.
+     */
+    public static void init(final String applicationName, final String host, final Integer port, final String username, final String password, final String virtualHost)
+            throws RabbitMQException {
+        AvrilogClient.applicationName = applicationName;
         factory = new HaConnectionFactory();
+        if (host != null) {
+            factory.setHost(host);
+        }
+        if (port != null) {
+            factory.setPort(port);
+        }
+        if (username != null) {
+            factory.setUsername(username);
+        }
+        if (password != null) {
+            factory.setPassword(password);
+        }
+        if (virtualHost != null) {
+            factory.setVirtualHost(virtualHost);
+        }
         factory.addListener(new ConnectionListener() {
             @Override
             public void onConnect(final Connection c) throws IOException {
                 c.createChannel().queueDeclare(TRACE_QUEUE_NAME, true, false, false, queurArgs.get(TRACE_QUEUE_NAME));
             }
         });
-        factory.setHost("localhost");
         factory.initConnection();
     }
 
@@ -73,6 +111,10 @@ public class AvrilogClient {
     public static void trace(final Trace trace, final boolean confirm) throws TraceException {
         try {
             Channel channel = factory.getLocalThreadChannel(confirm);
+            trace.setApplicationName(applicationName);
+            for (TraceListener listener : traceListeners) {
+                listener.beforeSend(trace);
+            }
             byte[] compressedTrace = compressTrace(trace);
             channel.basicPublish("", TRACE_QUEUE_NAME, MessageProperties.PERSISTENT_TEXT_PLAIN, compressedTrace);
             if (confirm) {
@@ -98,7 +140,6 @@ public class AvrilogClient {
      * Compress the trace using messagepack.
      */
     protected static byte[] compressTrace(final Trace trace) throws IOException {
-        MessagePack msgpack = new MessagePack();
         return msgpack.write(trace);
     }
 }

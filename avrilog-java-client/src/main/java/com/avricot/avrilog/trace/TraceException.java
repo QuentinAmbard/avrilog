@@ -1,4 +1,4 @@
-package com.avricot.avrilog;
+package com.avricot.avrilog.trace;
 
 public class TraceException extends RuntimeException {
     private static final long serialVersionUID = 1L;

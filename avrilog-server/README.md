@@ -2,6 +2,7 @@
 
 First we create the root certificate. 
 If you want to password-protect this key, add option -des3.
+
     openssl genrsa -out ca.key 4096
 
 Next, we create our self-signed root CA certificate ca.crt.
@@ -31,7 +32,7 @@ Next step: create our subordinate CA that will be used for the actual signing. F
 
     openssl genrsa -des3 -out ia.key 4096
     
-    Then, request a certificate for this subordinate CA:
+Then, request a certificate for this subordinate CA:
 
     openssl req -new -key ia.key -out ia.csr
     
@@ -57,7 +58,7 @@ Next step: create our subordinate CA that will be used for the actual signing. F
     
 Next step: process the request for the subordinate CA certificate and get it signed by the root CA.
 
-    opekilnssl x509 -req -days 730 -in ia.csr -CA ca.crt -CAkey ca.key -set_serial 01 -out ia.crt
+    openssl x509 -req -days 730 -in ia.csr -CA ca.crt -CAkey ca.key -set_serial 01 -out ia.crt
 
     Signature ok
     subject=/C=FR/ST=Some-State/L=Paris/O=Avrilog/OU=avrilog/CN=avrilog
