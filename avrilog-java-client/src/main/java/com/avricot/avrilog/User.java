@@ -11,6 +11,19 @@ public class User {
     private String groupId;
     private String ip;
 
+    public User(final String id, final String firstname, final String lastname, final String email, final String groupId, final String ip) {
+        this.id = id;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.groupId = groupId;
+        this.ip = ip;
+    }
+
+    public User() {
+
+    }
+
     public String getId() {
         return id;
     }
@@ -60,8 +73,9 @@ public class User {
         return ip;
     }
 
-    public void setIp(final String ip) {
+    public User setIp(final String ip) {
         this.ip = ip;
+        return this;
     }
 
     @Override

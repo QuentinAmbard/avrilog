@@ -22,28 +22,6 @@ object Account extends HBaseObject[Account]("account") {
   val tablePermissionName = "permission"
   val roleTable = new HTable(config, tablePermissionName);
 
-  def insert(account: Account) {
-    //Save the account
-    val p = new Put(Bytes.toBytes(account.email));
-    add(p, HBaseMetaData.Account.cfInfo, "email", account.email)
-    add(p, HBaseMetaData.Account.cfInfo, "firstname", account.firstname)
-    add(p, HBaseMetaData.Account.cfInfo, "lastname", account.lastname)
-    add(p, HBaseMetaData.Account.cfInfo, "lastname", account.lastname)
-    add(p, HBaseMetaData.Account.cfInfo, "password", account.password)
-    add(p, HBaseMetaData.Account.cfInfo, "salt", account.salt)
-    add(p, HBaseMetaData.Account.cfInfo, "password", account.password)
-    table.put(p)
-
-    //save the account permissions.
-    if (!account.permissions.isEmpty && (account.permissions.size == 1 && account.permissions.contains(Permission.USER))) {
-      val pPerm = new Put(Bytes.toBytes(account.email));
-      add(pPerm, HBaseMetaData.Permission.cfInfo, "email", account.email)
-      account.permissions.filter(_ != Permission.USER).foreach((permission) => {
-        add(pPerm, HBaseMetaData.Permission.cfInfo, permission.toString(), "1")
-      })
-      roleTable.put(pPerm)
-    }
-  }
   /**
    * Return a user by it's email.
    */

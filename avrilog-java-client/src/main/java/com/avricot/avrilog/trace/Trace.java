@@ -26,6 +26,11 @@ public class Trace {
         id = IdGenerator.generateId();
     }
 
+    public Trace(final String info) {
+        this();
+        this.info = info;
+    }
+
     public byte[] getId() {
         return id;
     }
@@ -94,7 +99,7 @@ public class Trace {
 
     public Trace setSign(final boolean sign) {
         this.sign = sign;
-        return null;
+        return this;
     }
 
     public boolean isHorodate() {
@@ -103,7 +108,7 @@ public class Trace {
 
     public Trace setHorodate(final boolean horodate) {
         this.horodate = horodate;
-        return null;
+        return this;
     }
 
     public String getEntityId() {
@@ -112,7 +117,12 @@ public class Trace {
 
     public Trace setEntityId(final String entityId) {
         this.entityId = entityId;
-        return null;
+        return this;
+    }
+
+    public Trace setEntityId(final Long entityId) {
+        this.entityId = entityId.toString();
+        return this;
     }
 
     public String getApplicationName() {
@@ -121,7 +131,7 @@ public class Trace {
 
     public Trace setApplicationName(final String applicationName) {
         this.applicationName = applicationName;
-        return null;
+        return this;
     }
 
     @Override

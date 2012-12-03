@@ -75,7 +75,8 @@ public class AvrilogClient {
     }
 
     /**
-     * Init rabbitmq factory with custom values.
+     * Init rabbitmq factory with custom values. Should be called after all
+     * configurations.
      */
     public static void init(final String applicationName, final String host, final Integer port, final String username, final String password, final String virtualHost)
             throws RabbitMQException {
