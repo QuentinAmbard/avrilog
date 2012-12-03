@@ -1,4 +1,4 @@
-package com.avricot.avrilog;
+package com.avricot.avrilog.trace;
 
 import org.msgpack.annotation.Message;
 
@@ -9,6 +9,7 @@ public class User {
     private String lastname;
     private String email;
     private String groupId;
+    private String groupName;
     private String ip;
 
     public User(final String id, final String firstname, final String lastname, final String email, final String groupId, final String ip) {
@@ -78,9 +79,17 @@ public class User {
         return this;
     }
 
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public User setGroupName(final String groupName) {
+        this.groupName = groupName;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "User [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", email=" + email + ", groupId=" + groupId + ", ip=" + ip + "]";
     }
-
 }

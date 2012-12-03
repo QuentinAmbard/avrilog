@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.msgpack.MessagePack;
 
 import com.avricot.avrilog.trace.Trace;
+import com.avricot.avrilog.trace.User;
 
 public class AvrilogClientTest {
     @Test

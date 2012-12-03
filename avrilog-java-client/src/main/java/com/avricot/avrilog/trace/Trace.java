@@ -7,7 +7,6 @@ import java.util.Map;
 import org.msgpack.annotation.Message;
 
 import com.avricot.avrilog.IdGenerator;
-import com.avricot.avrilog.User;
 
 @Message
 public class Trace {

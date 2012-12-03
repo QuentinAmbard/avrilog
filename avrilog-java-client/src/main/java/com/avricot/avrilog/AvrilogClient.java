@@ -140,7 +140,11 @@ public class AvrilogClient {
     /**
      * Compress the trace using messagepack.
      */
-    protected static byte[] compressTrace(final Trace trace) throws IOException {
-        return msgpack.write(trace);
+    protected static byte[] compressTrace(final Trace trace) throws TraceException {
+        try {
+            return msgpack.write(trace);
+        } catch (IOException e) {
+            throw new TraceException("can't serialize the trace.", e);
+        }
     }
 }
