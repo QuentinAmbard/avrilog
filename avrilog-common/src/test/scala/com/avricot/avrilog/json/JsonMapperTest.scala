@@ -23,7 +23,7 @@ class JsonMapperTest {
   }
 
   @Test def jsonTest(): Unit = {
-    val user = User("userId", "firstname", "lastname", null, null, null)
+    val user = User("userId", "firstname", "lastname", null, null, null, null)
     val d1 = new DateTime(1352282343000L)
     val ctrace = new ClientTrace(Array[Byte](12), null, null, null, "info", d1, false, false, user, Map[String, String]("a" -> "aqsd")) //
     val test2 = JsonMapper.mapper.writeValueAsString(ctrace)
@@ -31,7 +31,7 @@ class JsonMapperTest {
   }
 
   @Test def jsonTestMapp(): Unit = {
-    val user = User("userId", "firstname", "lastname", null, null, null)
+    val user = User("userId", "firstname", "lastname", null, null, null, null)
     val d1 = new DateTime(1352282343000L)
     val trace = Trace(new TraceContent(Binary(Array[Byte](12)), null, "qadeaz", "qazeaze", "aeazooo", d1, false, false, user, null, d1))
     val traceJson2 = JsonMapper.mapper.writeValueAsString(trace)

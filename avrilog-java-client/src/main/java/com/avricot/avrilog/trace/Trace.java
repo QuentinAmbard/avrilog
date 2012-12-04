@@ -1,6 +1,9 @@
 package com.avricot.avrilog.trace;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +13,7 @@ import com.avricot.avrilog.IdGenerator;
 
 @Message
 public class Trace {
+    private DateFormat df = null;
     private byte[] id;
     private String applicationName;
     private String entityId;
@@ -79,11 +83,18 @@ public class Trace {
         return data;
     }
 
-    public Trace addData(final String key, final String value) {
-        if (this.data == null) {
-            this.data = new HashMap<String, String>();
+    public Trace addData(final String key, final Object value) {
+        if (data == null) {
+            data = new HashMap<String, String>();
         }
-        this.data.put(key, value);
+        if (value instanceof Date) {
+            if (df == null) {
+                df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
+            }
+            data.put(key, df.format((Date) value));
+        } else {
+            data.put(key, value.toString());
+        }
         return this;
     }
 

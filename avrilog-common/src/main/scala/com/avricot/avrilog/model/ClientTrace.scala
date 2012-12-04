@@ -9,8 +9,8 @@ import org.msgpack.AvrilogMPack
 /**
  * User, built from clients message (compressed with msg pack), embedded in a trace.
  */
-case class User(var id: String, var firstname: String, var lastname: String, var email: String, var groupId: String, var ip: String) {
-  def this() = this(null, null, null, null, null, null)
+case class User(var id: String, var firstname: String, var lastname: String, var email: String, var groupId: String, var groupName: String, var ip: String) {
+  def this() = this(null, null, null, null, null, null, null)
 }
 
 /**
