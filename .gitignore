@@ -12,6 +12,5 @@ avrilog-server/project/target/
 *.cache
 *.idea
 /build
-/project
 /target
 */project/target

@@ -17,6 +17,6 @@ public class StressTraceIntegrationTest {
     }
 
     private Trace getTrace() {
-        return new Trace().setCategory("category");
+        return new Trace().setCategory("category").setSign(false);
     }
 }

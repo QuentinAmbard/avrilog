@@ -3,9 +3,18 @@ organization := "com.avricot.avrilog"
 
 name := "avrilog-common"
 
-version := "0.1"
+version := "0.1-SNAPSHOT"
 
 scalaVersion := "2.9.1"
+
+publishTo <<= version { (v: String) =>
+  if (v.trim.endsWith("SNAPSHOT"))
+    Some("snapshots" at "http://nexus.myprocurement.fr/content/repositories/snapshots")
+  else
+    Some("releases"  at "http://nexus.myprocurement.fr/content/repositories/releases")
+}
+
+
 
 resolvers ++= Seq(
 "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",

@@ -7,12 +7,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.msgpack.annotation.Ignore;
 import org.msgpack.annotation.Message;
 
 import com.avricot.avrilog.IdGenerator;
 
 @Message
 public class Trace {
+    @Ignore
     private DateFormat df = null;
     private byte[] id;
     private String applicationName;
@@ -87,13 +89,17 @@ public class Trace {
         if (data == null) {
             data = new HashMap<String, String>();
         }
-        if (value instanceof Date) {
-            if (df == null) {
-                df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
-            }
-            data.put(key, df.format((Date) value));
+        if (value == null) {
+            data.put(key, null);
         } else {
-            data.put(key, value.toString());
+            if (value instanceof Date) {
+                if (df == null) {
+                    df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
+                }
+                data.put(key, df.format((Date) value));
+            } else {
+                data.put(key, value.toString());
+            }
         }
         return this;
     }
