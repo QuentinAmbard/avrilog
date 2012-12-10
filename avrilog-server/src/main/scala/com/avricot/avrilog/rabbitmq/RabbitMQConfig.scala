@@ -5,7 +5,7 @@ import java.util.HashMap
 
 object RabbitMQConfig {
   val config = ConfigFactory.load()
-  val port = config.getInt("rabbitmq.port")
+  //val port = config.getInt("rabbitmq.port")
   val host = config.getString("rabbitmq.host")
   val password = config.getString("rabbitmq.password")
   val username = config.getString("rabbitmq.username")

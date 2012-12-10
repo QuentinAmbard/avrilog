@@ -17,7 +17,7 @@ import com.avricot.avrilog.model.Trace
 import com.avricot.avrilog.trace.TraceConsumer
 
 object Main {
-  def logger = LoggerFactory.getLogger(Main.getClass())
+  val logger = LoggerFactory.getLogger(Main.getClass())
   def main(args: Array[String]) = {
     logger.info("starting avrilog server")
     val config = ConfigFactory.load()

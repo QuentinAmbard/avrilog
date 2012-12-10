@@ -55,6 +55,8 @@ Monitoring the size of the rabbitmq queue might be a good idea too https://githu
 
 A monitoring cycle will be available with the web app.
 
+We advice to monitor server log files using for example the nagios plugin check_logfiles : http://labs.consol.de/nagios/check_logfiles/
+
 ####Rabbitmq disconnection
 If a rabbitmq node is down and doesn't restart, we delete mnesia files (backup it before).
 Stop it and make sure it's stopped.
@@ -74,7 +76,7 @@ Check your cluster conf file and make sure hosts names are OK.
 
     less /etc/rabbitmq/rabbitmq.config
 
-If the instance isn't in the cluster, add it 
+If the instance isn't in the cluster, add it
  
    rabbitmqctl join_cluster <<rabbit@rabbit1>>
    rabbitmqctl cluster_status

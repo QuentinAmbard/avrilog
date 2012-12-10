@@ -15,7 +15,7 @@ import model.security.Permission
 import com.typesafe.config.ConfigFactory
 
 object Global extends GlobalSettings {
-  def logger = LoggerFactory.getLogger(Global.getClass())
+  val logger = LoggerFactory.getLogger(Global.getClass())
 
   override def onStart(app: play.api.Application) {
     logger.info("init hbase configuration")
