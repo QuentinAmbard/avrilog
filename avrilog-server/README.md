@@ -44,6 +44,10 @@ register the script for startup :
 
     update-rc.d avrilog-server defaults
 
+create an application.conf file with your custom config (default parameters in the src/main/resources/reference.conf file)
+
+    vim $SERVER_HOME application.conf
+
 ##Monitoring
 At least a primitive java process monitoring might be a good idea, for example with shinken and jstat http://exchange.nagios.org/directory/Plugins/Java-Applications-and-Servers/check_jstat/details
 
@@ -82,8 +86,8 @@ If the generated jar can't be lauched because of the exception
 
 That's because you need to add hbase default file to the jar (at the root level, the file can be found in the hadoop/hbase jars in /lib folder) :
 
-    jar -uf avrilog-server_2.9.1-0.1-one-jar.jar core-default.xml
-    jar -uf avrilog-server_2.9.1-0.1-one-jar.jar hbase-default.xml
+    jar -uf avrilog-server.jar core-default.xml
+    jar -uf avrilog-server.jar hbase-default.xml
 
 TODO : make it automatic
 

@@ -19,15 +19,13 @@ import com.avricot.avrilog.trace.TraceConsumer
 object Main {
   def logger = LoggerFactory.getLogger(Main.getClass())
   def main(args: Array[String]) = {
-    logger.info("start avrilog server")
+    logger.info("starting avrilog server")
     val config = ConfigFactory.load()
-    println(config.getString("hbase.zookeeper.quorum"))
-    println(config.getString("hbase.zookeeper.property.clientPort"))
     HormConfig.init(config.getString("hbase.zookeeper.quorum"), config.getInt("hbase.zookeeper.property.clientPort"))
-    println(config.getString("hbase.checkSchemaOnStartup"))
     if (config.getBoolean("hbase.checkSchemaOnStartup")) {
       HormConfig.initTable(classOf[Trace])
     }
     val test = new TraceConsumer()
+    logger.info("trace consumer launched")
   }
 }
