@@ -36,6 +36,11 @@ Override the default configuration with your values if needed :
     	}
     }
 
+##Startup
+
+edit the init.d script with your config (sample at the root of the project), change the SERVER_HOME and add your custom parameters on AVRILOG_PARAMETER 
+
+
 ##Monitoring
 At least a primitive java process monitoring might be a good idea, for example with shinken and jstat http://exchange.nagios.org/directory/Plugins/Java-Applications-and-Servers/check_jstat/details
 
@@ -76,7 +81,6 @@ That's because you need to add hbase default file to the jar (at the root level,
 
     jar -uf avrilog-server_2.9.1-0.1-one-jar.jar core-default.xml
     jar -uf avrilog-server_2.9.1-0.1-one-jar.jar hbase-default.xml
-
 
 TODO : make it automatic
 

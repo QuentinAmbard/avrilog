@@ -36,6 +36,14 @@ Override the default configuration with your values if needed :
     	}
     }
 
+##Startup
+
+edit the init.d script with your config (sample at the root of the project), change the SERVER_HOME and add your custom parameters on AVRILOG_PARAMETER 
+
+register the script for startup :
+
+    update-rc.d avrilog-server defaults
+
 ##Monitoring
 At least a primitive java process monitoring might be a good idea, for example with shinken and jstat http://exchange.nagios.org/directory/Plugins/Java-Applications-and-Servers/check_jstat/details
 
