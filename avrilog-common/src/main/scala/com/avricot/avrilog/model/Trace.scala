@@ -22,7 +22,6 @@ import com.avricot.horm.HormBaseObject
 import com.avricot.avrilog.json.JsonMapper
 import com.avricot.avrilog.json.JsonObj
 import org.msgpack.AvrilogMPack
-import com.avricot.avrilog.json.Binary
 //import com.codahale.jerkson.Json._
 
 /**
