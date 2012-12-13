@@ -10,12 +10,12 @@ import com.avricot.avrilog.model.Trace
 import com.avricot.avrilog.model.TraceContent
 
 case class TestSer(test: TestSer2, bar: String)
-case class TestSer2(foo: String, bar: Binary, dt: scala.collection.Map[String, String])
+case class TestSer2(foo: String, bar: Array[Byte], dt: scala.collection.Map[String, String])
 
 class JsonMapperTest {
 
   @Test def jsonTestMap(): Unit = {
-    val t = TestSer2("ee", Binary(Array[Byte](2)), scala.collection.Map[String, String]("aa" -> "az"))
+    val t = TestSer2("ee", Array[Byte](2), scala.collection.Map[String, String]("aa" -> "az"))
     val traceJson2 = JsonMapper.mapper.writeValueAsString(t)
     println(traceJson2)
     val test3 = JsonMapper.mapper.readValue(traceJson2, classOf[TestSer2])
@@ -33,11 +33,11 @@ class JsonMapperTest {
   @Test def jsonTestMapp(): Unit = {
     val user = User("userId", "firstname", "lastname", null, null, null, null)
     val d1 = new DateTime(1352282343000L)
-    val trace = Trace(new TraceContent(Binary(Array[Byte](12)), null, "qadeaz", "qazeaze", "aeazooo", d1, false, false, user, null, d1))
+    val trace = Trace(new TraceContent(Array[Byte](12), null, "qadeaz", "qazeaze", "aeazooo", d1, false, false, user, null, d1))
     val traceJson2 = JsonMapper.mapper.writeValueAsString(trace)
     println(traceJson2)
     val test3 = JsonMapper.mapper.readValue(traceJson2, classOf[Trace])
-    Assert.assertEquals(12, test3.content.id.bytes.head)
+    Assert.assertEquals(12, test3.content.id.head)
 
   }
 

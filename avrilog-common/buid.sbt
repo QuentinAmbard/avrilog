@@ -35,7 +35,7 @@ libraryDependencies ++= Seq(
 	"org.bouncycastle" % "bctsp-jdk16" % "1.46"  ,
 	"org.bouncycastle" % "bcmail-jdk16" % "1.46"  ,
 	"com.github.scala-incubator.io" %% "scala-io-core" % "0.4.1-seq"  ,
-    "com.fasterxml.jackson.module" % "jackson-module-scala" % "2.1.1"   ,
+    "com.fasterxml.jackson.module" % "jackson-module-scala" % "2.1.2"   ,
 	"com.typesafe" % "config" % "0.6.0"  ,
 	"org.msgpack" %% "msgpack-scala" % "0.6.6"    ,
 	"com.avricot" %% "horm" % "0.2-SNAPSHOT")

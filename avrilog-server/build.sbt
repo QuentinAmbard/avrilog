@@ -25,8 +25,7 @@ libraryDependencies ++= Seq(
 	"com.typesafe.akka" % "akka-actor" % "2.0.3"  ,
 	"commons-codec" % "commons-codec" % "1.7"  ,
 	"org.msgpack" % "msgpack" % "0.6.6" ,
-        "com.avricot.avrilog" %% "avrilog-common" % "0.1-SNAPSHOT" ,
-	//"com.avricot.avrilog" %% "avrilog-common" % "0.1-SNAPSHOT" exclude("org.jruby", "jruby-complete") ,
+    "com.avricot.avrilog" %% "avrilog-common" % "0.1-SNAPSHOT" exclude("org.jruby", "jruby-complete") ,
 	"com.avricot" %% "horm" % "0.3-SNAPSHOT" exclude("org.jruby", "jruby-complete"))
            
 //EclipseKeys.withSource := true

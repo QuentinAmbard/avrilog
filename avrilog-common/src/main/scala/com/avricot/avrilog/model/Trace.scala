@@ -28,30 +28,22 @@ import com.avricot.avrilog.json.Binary
 /**
  * A trace, stored in the database.
  */
-case class Trace(content: TraceContent, timestampingContent: Binary = null, signContent: Binary = null) extends HormBaseObject with JsonObj {
-  def getHBaseId() = content.id.bytes
+case class Trace(content: TraceContent, timestampingContent: Array[Byte] = null, signContent: Array[Byte] = null) extends HormBaseObject with JsonObj {
+  def getHBaseId() = content.id
   def serialize(): Array[Byte] = {
     AvrilogMPack.write(this)
   }
 }
 
-object Trace extends HormObject[Trace] {
-  def apply(content: TraceContent, timestampingContent: Array[Byte], signContent: Array[Byte]) = {
-    new Trace(content, Binary(timestampingContent), Binary(signContent))
-  }
-}
+object Trace extends HormObject[Trace]
 
-case class TraceContent(id: Binary, applicationName: String, entityId: String, category: String, info: String, clientDate: DateTime, sign: Boolean, horodate: Boolean, user: User, data: Map[String, String], date: DateTime = null) extends JsonObj
+case class TraceContent(id: Array[Byte], applicationName: String, entityId: String, category: String, info: String, clientDate: DateTime, sign: Boolean, horodate: Boolean, user: User, data: Map[String, String], date: DateTime = null) extends JsonObj
 
 /**
  * Trance content builder. Can't be defined as a constructor in the TraceContent because of json deserialization issues.
  */
 object TraceContent {
-  def apply(id: Array[Byte], applicationName: String, entityId: String, category: String, info: String, clientDate: DateTime, sign: Boolean, horodate: Boolean, user: User, data: Map[String, String], date: DateTime) = {
-    new TraceContent(Binary(id), applicationName, entityId, category, info, clientDate, sign, horodate, user, data, date)
-  }
-
   def apply(clientTrace: ClientTrace) = {
-    new TraceContent(Binary(clientTrace.id), clientTrace.applicationName, clientTrace.entityId, clientTrace.category, clientTrace.info, clientTrace.clientDate, clientTrace.sign, clientTrace.horodate, clientTrace.user, clientTrace.data, new DateTime())
+    new TraceContent(clientTrace.id, clientTrace.applicationName, clientTrace.entityId, clientTrace.category, clientTrace.info, clientTrace.clientDate, clientTrace.sign, clientTrace.horodate, clientTrace.user, clientTrace.data, new DateTime())
   }
 }
