@@ -16,6 +16,7 @@ object RabbitMQConfig {
     val durable = config.getBoolean("rabbitmq.trace.durable")
     val exclusive = config.getBoolean("rabbitmq.trace.exclusive")
     val autodelete = config.getBoolean("rabbitmq.trace.autodelete")
+    val autoAck = config.getBoolean("rabbitmq.trace.autoAck")
     val haMode = config.getString("rabbitmq.trace.ha-mode")
     val haParams = config.getString("rabbitmq.trace.ha-params")
     val haConfig = new HashMap[String, Object]()

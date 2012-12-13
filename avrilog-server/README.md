@@ -12,8 +12,6 @@ Web interface migth be installed to control queue status, users access etc.  see
 
 Override the default configuration with your values if needed :
 
-    java  "-XX:OnOutOfMemoryError=kill -9"  -jar avrilog-server.jar -Drabbitmq.port=5672
-
     rabbitmq: {
     	host: "localhost",
     	username: "guest",
@@ -38,6 +36,10 @@ Override the default configuration with your values if needed :
 
 ##Startup
 
+first try to start the server with your custom conf using
+
+    java -Dlog4j.configuration=file:/home/avrilog/log4j.properties -Dconfig.file=/home/avrilog/application.conf -jar avrilog-server.jar 
+
 edit the init.d script with your config (sample at the root of the project), change the SERVER_HOME and add your custom parameters on AVRILOG_PARAMETER 
 
 register the script for startup :
@@ -48,6 +50,11 @@ create an application.conf file with your custom config (default parameters in t
 
     vim $SERVER_HOME application.conf
 
+create a log4j file with your configuration (sample at the root of the project)
+
+    vim $SERVER_HOME log4j.properties
+
+-XX:OnOutOfMemoryError=kill -9
 ##Monitoring
 At least a primitive java process monitoring might be a good idea, for example with shinken and jstat http://exchange.nagios.org/directory/Plugins/Java-Applications-and-Servers/check_jstat/details
 
@@ -55,7 +62,21 @@ Monitoring the size of the rabbitmq queue might be a good idea too https://githu
 
 A monitoring cycle will be available with the web app.
 
-We advice to monitor server log files using for example the nagios plugin check_logfiles : http://labs.consol.de/nagios/check_logfiles/
+We advice to monitor server log files using for example the nagios plugin check_logfiles : http://labs.consol.de/nagios/check_logfiles/ with nrpe
+use nrpe : http://nagios.sourceforge.net/docs/nrpe/NRPE.pdf
+
+#### nrpe on remote hosts :
+manual installation :
+
+    wget http://freefr.dl.sourceforge.net/project/nagiosplug/nagiosplug/1.4.16/nagios-plugins-1.4.16.tar.gz
+    tar -xzf nagios-plugins-1.4.16.tar.gz
+    cd nagios-plugins-1.4.16
+    sudo apt-get install libssl-dev
+    ./configure --with-nagios-user=nagios --with-nagios-group=users
+    make
+    make install
+
+puppet installation : see https://github.com/example42/puppet-nrpe
 
 ####Rabbitmq disconnection
 If a rabbitmq node is down and doesn't restart, we delete mnesia files (backup it before).

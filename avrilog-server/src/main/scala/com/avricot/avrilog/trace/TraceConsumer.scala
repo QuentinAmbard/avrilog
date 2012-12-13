@@ -22,12 +22,14 @@ class TraceConsumer {
 
   def handleTrance(msg: Message): Unit = {
     try {
-      try {
-        //msg.sendAck();
-      } catch {
-        case e: IOException => logger.error("error trying to ack the msg. rabbitMQ is probably down.", e); return
-      }
       val clientTrace = AvrilogMPack.read[ClientTrace](msg.body);
+      if (!RabbitMQConfig.Trace.autoAck) {
+        try {
+          msg.sendAck();
+        } catch {
+          case e: IOException => logger.error("error trying to ack the msg. rabbitMQ is probably down.", e); return
+        }
+      }
       val traceContent = TraceContent(clientTrace)
       val traceContentBytes = traceContent.toJson.getBytes()
       try {
@@ -50,5 +52,5 @@ class TraceConsumer {
     }
   }
   val system = ActorSystem()
-  system.actorOf(Props(new ConsumerManager(RabbitMQConfig.Trace.queue, RabbitMQConfig.Trace.durable, RabbitMQConfig.Trace.exclusive, RabbitMQConfig.Trace.autodelete, RabbitMQConfig.Trace.haConfig, handleTrance))) ! Start
+  system.actorOf(Props(new ConsumerManager(RabbitMQConfig.Trace.queue, RabbitMQConfig.Trace.durable, RabbitMQConfig.Trace.exclusive, RabbitMQConfig.Trace.autodelete, RabbitMQConfig.Trace.autoAck, RabbitMQConfig.Trace.haConfig, handleTrance))) ! Start
 }

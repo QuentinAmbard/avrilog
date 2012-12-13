@@ -23,7 +23,9 @@ object ByteArraySerializer extends StdSerializer[Binary](classOf[Binary]) {
   val isoFormatter = ISODateTimeFormat.dateTime();
 
   override def serialize(value: Binary, gen: JsonGenerator, arg2: SerializerProvider) = {
-    gen.writeBinary(value.bytes)
+    if (value.bytes != null) {
+      gen.writeBinary(value.bytes)
+    }
   }
 }
 

@@ -1,0 +1,12 @@
+log4j.rootLogger=INFO,avrilog
+
+#Daily rolling File Appender
+log4j.appender.avrilog=org.apache.log4j.DailyRollingFileAppender
+
+# Rollver at midnight
+log4j.appender.avrilog.DatePattern=.yyyy-MM-dd
+
+log4j.appender.avrilog.File=/home/avrilog/avrilog.log
+log4j.appender.avrilog.layout=org.apache.log4j.PatternLayout
+log4j.appender.avrilog.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n
+
