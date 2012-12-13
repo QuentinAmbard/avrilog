@@ -36,6 +36,10 @@ Override the default configuration with your values if needed :
 
 ##Startup
 
+first try to start the server with your custom conf using
+
+    java -Dlog4j.configuration=file:/home/avrilog/log4j.properties -Dconfig.file=/home/avrilog/application.conf -jar avrilog-server.jar 
+
 edit the init.d script with your config (sample at the root of the project), change the SERVER_HOME and add your custom parameters on AVRILOG_PARAMETER 
 
 register the script for startup :
@@ -49,7 +53,6 @@ create an application.conf file with your custom config (default parameters in t
 create a log4j file with your configuration (sample at the root of the project)
 
     vim $SERVER_HOME log4j.properties
-
 
 -XX:OnOutOfMemoryError=kill -9
 ##Monitoring
@@ -196,20 +199,11 @@ more info here : http://blog.didierstevens.com/2008/12/30/howto-make-your-own-ce
 
 ####Generating you own timestamp certificate file :
 
-edit your openssl.cnf file, and uncomment (add) the following line on the [ usr_cert ] part:
+    openssl genrsa -out tsaroot.key 4096 -config openssl.cnf
+    openssl req -new -x509 -days 1826 -key tsaroot.key -out tsaroot.crt -config openssl.cnf
 
-    extendedKeyUsage = critical,timeStamping
-
-generate CA (need to do it only once)
-
-    /usr/lib/ssl/misc/CA.sh -newca
-create certificate request
-
-    openssl req -new -keyout user.key -out user.req -config yourconf.cnf
-sign request by CA
-
-    openssl ca -policy policy_anything -config yourconf.cnf -out user.pem -infiles user.req
-convert it into PKCS#12 (pfx) container, that can be used from various soft
-
-    openssl pkcs12 -export -in user.pem -inkey user.key -out user.p12 -name user -caname your_ca_name -chain -CAfile ./demoCA/cacert.pem
+    openssl genrsa -des3 -out tsa.key 4096 -config openssl.cnf
+    openssl req -new -key tsa.key -out tsa.csr -config openssl.cnf
+    openssl x509 -req -days 730 -in tsa.csr -CA tsaroot.crt -CAkey tsaroot.key -set_serial 01 -out tsa.crt
+    openssl pkcs12 -export -out tsa.p12 -inkey tsa.key -in tsa.crt -chain -CAfile tsaroot.crt
 

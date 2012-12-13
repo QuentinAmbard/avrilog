@@ -199,20 +199,19 @@ more info here : http://blog.didierstevens.com/2008/12/30/howto-make-your-own-ce
 
 ####Generating you own timestamp certificate file :
 
-edit your openssl.cnf file, and uncomment (add) the following line on the [ usr_cert ] part:
+generate your root certificate (or re-use the last if you have it)
 
+    openssl genrsa -out tsaroot.key 4096
+    openssl req -new -x509 -days 1826 -key tsaroot.key -out tsaroot.crt
+
+Adding the timestamping extendedKeyUsage in the openssl.cnf with a [v3_tsa] and using the  -config openssl.cnf -extensions v3_tsa
+create a file extKey.cnf with the extendedKeyUsage inside
+
+    vim extKey.cnf
     extendedKeyUsage = critical,timeStamping
 
-generate CA (need to do it only once)
-
-    /usr/lib/ssl/misc/CA.sh -newca
-create certificate request
-
-    openssl req -new -keyout user.key -out user.req -config yourconf.cnf
-sign request by CA
-
-    openssl ca -policy policy_anything -config yourconf.cnf -out user.pem -infiles user.req
-convert it into PKCS#12 (pfx) container, that can be used from various soft
-
-    openssl pkcs12 -export -in user.pem -inkey user.key -out user.p12 -name user -caname your_ca_name -chain -CAfile ./demoCA/cacert.pem
+    openssl genrsa -des3 -out tsa.key 4096
+    openssl req -new -key tsa.key -out tsa.csr
+    openssl x509 -req -days 730 -in tsa.csr -CA tsaroot.crt -CAkey tsaroot.key -set_serial 01 -out tsa.crt -extfile extKey.cnf
+    openssl pkcs12 -export -out tsa.p12 -inkey tsa.key -in tsa.crt -chain -CAfile tsaroot.crt
 
