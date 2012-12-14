@@ -34,7 +34,7 @@ public class AvrilogClientIntegrationTest {
      */
     @Test
     public void init() {
-        AvrilogClient.init("test");
+        AvrilogClient.init("test", "localhost:5672", null, null, null);
         AvrilogClient.trace(getTrace("test"));
     }
 

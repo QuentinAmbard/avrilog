@@ -44,10 +44,10 @@ class ConsumerActor(queuName: String, durable: Boolean, exclusive: Boolean, auto
         while (listen) {
           // wait for the message
           val delivery = consumer.nextDelivery()
-          log.info("getting next deliv {}", delivery.getEnvelope().getDeliveryTag())
+          log.debug("getting next deliv {}", delivery.getEnvelope().getDeliveryTag())
           val msg = Message(delivery.getBody(), delivery.getEnvelope().getDeliveryTag(), channel, sender)
           if (!listen) {
-            log.debug("getting next deliv but programmed to stop, just skip it, ack won't be sent.")
+            log.warning("getting next deliv but programmed to stop (get a ConsumerException from the last execution), just skip it, ack won't be sent.")
           } else {
             // send the message to the provided callback function
             // and execute this in a subactor

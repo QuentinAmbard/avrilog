@@ -50,10 +50,11 @@ public class HaConnectionFactory extends ConnectionFactory {
                 String host = url.substring(0, url.indexOf(":"));
                 String port = url.substring(url.indexOf(":") + 1);
                 adds.add(new Address(host, Integer.valueOf(port)));
-                LOG.debug("rabbitmq node address : {}:{}", host, port);
+                LOG.info("rabbitmq node address : {}:{}", host, port);
             }
             addresses = adds.toArray(new Address[adds.size()]);
         } else {
+            LOG.info("rabbitmq node address set to default");
             addresses = null;
         }
     }
