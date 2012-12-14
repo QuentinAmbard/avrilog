@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.rabbitmq.client.Address;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -38,6 +39,24 @@ import com.rabbitmq.client.ShutdownSignalException;
  */
 public class HaConnectionFactory extends ConnectionFactory {
     private static final Logger LOG = LoggerFactory.getLogger(HaConnectionFactory.class);
+    private final Address[] addresses;
+
+    public HaConnectionFactory(final String connectionUrl) {
+        super();
+        ArrayList<Address> adds = new ArrayList<Address>();
+        if (connectionUrl != null) {
+            String[] urls = connectionUrl.split(",");
+            for (String url : urls) {
+                String host = url.substring(0, url.indexOf(":"));
+                String port = url.substring(url.indexOf(":") + 1);
+                adds.add(new Address(host, Integer.valueOf(port)));
+                LOG.debug("rabbitmq node address : {}:{}", host, port);
+            }
+            addresses = adds.toArray(new Address[adds.size()]);
+        } else {
+            addresses = null;
+        }
+    }
 
     /**
      */
@@ -128,7 +147,11 @@ public class HaConnectionFactory extends ConnectionFactory {
 
     private boolean tryToConnect() {
         try {
-            connection = super.newConnection();
+            if (addresses == null || addresses.length == 0) {
+                connection = super.newConnection();
+            } else {
+                connection = super.newConnection(addresses);
+            }
             connection.addShutdownListener(new HaShutdownListener());
             LOG.info("Reconnection complete");
             try {

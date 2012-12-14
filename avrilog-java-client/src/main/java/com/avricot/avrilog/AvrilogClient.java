@@ -71,23 +71,17 @@ public class AvrilogClient {
      * Init rabbitmq factory with default values.
      */
     public static void init(final String applicationName) throws RabbitMQException {
-        init(applicationName, null, null, null, null, null);
+        init(applicationName, null, null, null, null);
     }
 
     /**
      * Init rabbitmq factory with custom values. Should be called after all
      * configurations.
      */
-    public static void init(final String applicationName, final String host, final Integer port, final String username, final String password, final String virtualHost)
+    public static void init(final String applicationName, final String connectionUrl, final String username, final String password, final String virtualHost)
             throws RabbitMQException {
         AvrilogClient.applicationName = applicationName;
-        factory = new HaConnectionFactory();
-        if (host != null) {
-            factory.setHost(host);
-        }
-        if (port != null) {
-            factory.setPort(port);
-        }
+        factory = new HaConnectionFactory(connectionUrl);
         if (username != null) {
             factory.setUsername(username);
         }

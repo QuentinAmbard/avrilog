@@ -9,7 +9,6 @@ object RabbitConnector {
   val logger = LoggerFactory.getLogger(RabbitConnector.getClass())
 
   val factory = new ConnectionFactory()
-  //Simple node mode
   val addresses = new ArrayList[Address]()
   val hosts = RabbitMQConfig.host.split(",")
   hosts.foreach(s => {
