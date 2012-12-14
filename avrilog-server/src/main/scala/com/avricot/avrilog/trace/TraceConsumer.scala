@@ -23,7 +23,6 @@ class TraceConsumer {
 
   def handleTrance(msg: Message): Unit = {
     try {
-      throw new ConsumerException("TEST ERROR - ACK NOT SENT.", null)
       val clientTrace = AvrilogMPack.read[ClientTrace](msg.body);
       val traceContent = TraceContent(clientTrace)
       val traceContentBytes = traceContent.toJson.getBytes()
