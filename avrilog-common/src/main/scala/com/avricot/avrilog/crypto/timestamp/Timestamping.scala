@@ -47,6 +47,7 @@ object Timestamping extends Hash {
 
   def timestamp(b: Array[Byte]): Array[Byte] = {
     if (!activated) {
+      logger.warn("remote timestamping isn't activated. (integrity.remoteTimestamping.activated=false) ")
       return null
     }
     try {

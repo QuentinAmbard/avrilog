@@ -98,6 +98,10 @@ object Sign extends Hash {
       val signers = signedData.getSignerInfos().getSigners()
       val firstSigner = signers.iterator().next().asInstanceOf[SignerInformation]
       val timestampData = Timestamping.timestamp(firstSigner.getSignature())
+      if (timestampData == null) {
+        logger.info("remote timestamping just failed. Try to add a local timestamp instead.")
+        addLocalTimestampTo(signedData)
+      }
       val signedDataWithTimestamp = addTimestampToSign(timestampData, signedData, firstSigner)
       signedDataWithTimestamp.getEncoded()
     } catch {
@@ -199,29 +203,35 @@ object Sign extends Hash {
       val content = new CMSProcessableByteArray(input)
       val signedData = signGen.generate(content)
       if (addLocalTimestamp) {
-        val tsaSigner = new JcaContentSignerBuilder(signatureAlgorithm).setProvider(providerName).build(timestampKeyStore.privatekey).asInstanceOf[ContentSigner]
-        val tsaSignerInfo = new JcaSignerInfoGeneratorBuilder(new JcaDigestCalculatorProviderBuilder().setProvider(providerName).build()).build(tsaSigner, timestampKeyStore.cert)
-        val reqGen = new TimeStampRequestGenerator()
-        if (includeTsaCert) {
-          reqGen.setCertReq(true)
-        }
-        val signers = signedData.getSignerInfos().getSigners()
-        val firstSigner = signers.iterator().next().asInstanceOf[SignerInformation]
-        val rand = new Random()
-        val timestampRequest = reqGen.generate(timestampTSPAlgorithms, getRawHash(firstSigner.getSignature(), algo))
-        val timestampGenerator = new TimeStampTokenGenerator(tsaSignerInfo, tsaPolicyId)
-        if (includeTsaCert) {
-          timestampGenerator.addCertificates(timestampKeyStore.store)
-        }
-        val timestamp = timestampGenerator.generate(timestampRequest, BigInteger.valueOf(rand.nextLong()), new Date())
-        val signedDataWithTimestamp = addTimestampToSign(timestamp.getEncoded(), signedData, firstSigner)
-        signedDataWithTimestamp
+        addLocalTimestampTo(signedData)
       } else {
         signedData
       }
     } catch {
       case e: Throwable => logger.error("can't sign the data : ", e); null
     }
+  }
+
+  /**
+   * Return a CMSSignedData with a local timestamp for the first signer.
+   */
+  private def addLocalTimestampTo(signedData: CMSSignedData) = {
+    val tsaSigner = new JcaContentSignerBuilder(signatureAlgorithm).setProvider(providerName).build(timestampKeyStore.privatekey).asInstanceOf[ContentSigner]
+    val tsaSignerInfo = new JcaSignerInfoGeneratorBuilder(new JcaDigestCalculatorProviderBuilder().setProvider(providerName).build()).build(tsaSigner, timestampKeyStore.cert)
+    val reqGen = new TimeStampRequestGenerator()
+    if (includeTsaCert) {
+      reqGen.setCertReq(true)
+    }
+    val signers = signedData.getSignerInfos().getSigners()
+    val firstSigner = signers.iterator().next().asInstanceOf[SignerInformation]
+    val rand = new Random()
+    val timestampRequest = reqGen.generate(timestampTSPAlgorithms, getRawHash(firstSigner.getSignature(), algo))
+    val timestampGenerator = new TimeStampTokenGenerator(tsaSignerInfo, tsaPolicyId)
+    if (includeTsaCert) {
+      timestampGenerator.addCertificates(timestampKeyStore.store)
+    }
+    val timestamp = timestampGenerator.generate(timestampRequest, BigInteger.valueOf(rand.nextLong()), new Date())
+    addTimestampToSign(timestamp.getEncoded(), signedData, firstSigner)
   }
 
   /**
