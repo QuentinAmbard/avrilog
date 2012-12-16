@@ -37,6 +37,7 @@ class TraceConsumer {
             case _ => Trace(traceContent)
           }
           try {
+            logger.debug(trace.toJson)
             Trace.save(trace)
             //One it's saved, send the ack to rabbitmq.
             if (!RabbitMQConfig.Trace.autoAck) {
@@ -54,7 +55,7 @@ class TraceConsumer {
         }
       }
     } catch {
-      case e: ConsumerException => logger.error("oOOOOooooooooooooooooo"); throw e
+      case e: ConsumerException => throw e
       case e: IOException => throw new ConsumerException("IO exception. Your incoming message might not verify the protocol (field name much match to read trace using messagePack). body: " + msg.body + ", delivery Tag: " + msg.deliveryTag, e)
       case e: Throwable => throw new ConsumerException("Unknown exception.", e)
     }

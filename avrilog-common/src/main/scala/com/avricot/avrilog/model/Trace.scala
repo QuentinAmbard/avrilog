@@ -36,7 +36,8 @@ case class Trace(content: TraceContent, timestampingContent: Array[Byte] = null,
 
 object Trace extends HormObject[Trace]
 
-case class TraceContent(id: Array[Byte], applicationName: String, entityId: String, category: String, info: String, clientDate: DateTime, sign: Boolean, horodate: Boolean, user: User, data: Map[String, String], date: DateTime = null) extends JsonObj
+case class TraceContent(id: Array[Byte], applicationName: String, entityId: String, category: String, info: String, clientDate: DateTime, sign: Boolean, horodate: Boolean, user: User, data: Map[String, String], date: DateTime = null) extends JsonObj {
+}
 
 /**
  * Trance content builder. Can't be defined as a constructor in the TraceContent because of json deserialization issues.

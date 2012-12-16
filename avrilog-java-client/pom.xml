@@ -23,7 +23,7 @@
 	     <url>http://nexus.myprocurement.fr/content/repositories/snapshots/</url>
 	  </snapshotRepository>
 	</distributionManagement>
-	
+	 
 	<dependencies>
 		<dependency>
 			<groupId>com.rabbitmq</groupId>
@@ -45,7 +45,12 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.6</version>
 		</dependency>
-
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.7</version>
+		</dependency>
+            
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>

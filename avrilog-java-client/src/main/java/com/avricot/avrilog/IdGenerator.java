@@ -6,6 +6,8 @@ import java.util.Enumeration;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +45,10 @@ public class IdGenerator {
         LOGGER.debug("count {} reverseTimestamp {} ", count, reverseTimestamp);
         byte regionId = (byte) new Random().nextInt(regionNumber);
         return ByteBuffer.allocate(ID_BYTE_SIZE).put(regionId).putInt(reverseTimestamp).put(machineUuid).putLong(count).array();
+    }
+
+    public static String idToB64(final byte[] id) {
+        return StringUtils.newStringUtf8(Base64.encodeBase64(id));
     }
 
     public static String explodeId(final byte[] id) {

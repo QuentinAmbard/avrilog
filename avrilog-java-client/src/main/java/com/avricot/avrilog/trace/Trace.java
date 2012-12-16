@@ -40,6 +40,10 @@ public class Trace {
         return id;
     }
 
+    public String getIdAsString() {
+        return IdGenerator.idToB64(id);
+    }
+
     public Trace setId(final byte[] id) {
         this.id = id;
         return this;
