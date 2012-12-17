@@ -8,6 +8,7 @@ import junit.framework.Assert
 import scala.collection.mutable.Map
 import com.avricot.avrilog.model.Trace
 import com.avricot.avrilog.model.TraceContent
+import scala.collection.immutable.TreeMap
 
 case class TestSer(test: TestSer2, bar: String)
 case class TestSer2(foo: String, bar: Array[Byte], dt: scala.collection.Map[String, String])
@@ -25,17 +26,18 @@ class JsonMapperTest {
   @Test def jsonTest(): Unit = {
     val user = User("userId", "firstname", "lastname", null, null, null, null)
     val d1 = new DateTime(1352282343000L)
-    val ctrace = new ClientTrace(Array[Byte](12), null, null, null, "info", d1, false, false, user, Map[String, String]("a" -> "aqsd")) //
+    val ctrace = new ClientTrace(Array[Byte](12), null, null, null, "info", d1, false, false, user, Map[String, String]("i" -> "aqsd")) //
     val test2 = JsonMapper.mapper.writeValueAsString(ctrace)
-    Assert.assertEquals("""{"id":"DA==","info":"info","clientDate":"2012-11-07T10:59:03.000+01:00","sign":false,"horodate":false,"user":{"id":"userId","firstname":"firstname","lastname":"lastname"},"data":{"a":"aqsd"}}""", test2)
+    Assert.assertEquals("""{"id":"DA==","info":"info","clientDate":"2012-11-07T10:59:03.000+01:00","sign":false,"horodate":false,"user":{"id":"userId","firstname":"firstname","lastname":"lastname"},"data":{"i":"aqsd"}}""", test2)
   }
 
+  //Also check TreeMap String order.
   @Test def jsonTestMapp(): Unit = {
     val user = User("userId", "firstname", "lastname", null, null, null, null)
     val d1 = new DateTime(1352282343000L)
-    val trace = Trace(new TraceContent(Array[Byte](12), null, "qadeaz", "qazeaze", "aeazooo", d1, false, false, user, null, d1))
+    val trace = Trace(new TraceContent(Array[Byte](12), null, "qadeaz", "qazeaze", "aeazooo", d1, false, false, user, TreeMap[String, String]("i" -> "aqsd", "kk" -> "ff", "zz" -> "aa", "bb" -> "aqsd"), d1))
     val traceJson2 = JsonMapper.mapper.writeValueAsString(trace)
-    println(traceJson2)
+    Assert.assertEquals("""{"content":{"id":"DA==","entityId":"qadeaz","category":"qazeaze","info":"aeazooo","clientDate":"2012-11-07T10:59:03.000+01:00","sign":false,"horodate":false,"user":{"id":"userId","firstname":"firstname","lastname":"lastname"},"data":{"bb":"aqsd","i":"aqsd","kk":"ff","zz":"aa"},"date":"2012-11-07T10:59:03.000+01:00"}}""", traceJson2)
     val test3 = JsonMapper.mapper.readValue(traceJson2, classOf[Trace])
     Assert.assertEquals(12, test3.content.id.head)
 

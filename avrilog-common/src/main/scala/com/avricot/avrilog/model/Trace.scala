@@ -22,6 +22,7 @@ import com.avricot.horm.HormBaseObject
 import com.avricot.avrilog.json.JsonMapper
 import com.avricot.avrilog.json.JsonObj
 import org.msgpack.AvrilogMPack
+import scala.collection.immutable.TreeMap
 //import com.codahale.jerkson.Json._
 
 /**
@@ -36,7 +37,7 @@ case class Trace(content: TraceContent, timestampingContent: Array[Byte] = null,
 
 object Trace extends HormObject[Trace]
 
-case class TraceContent(id: Array[Byte], applicationName: String, entityId: String, category: String, info: String, clientDate: DateTime, sign: Boolean, horodate: Boolean, user: User, data: Map[String, String], date: DateTime = null) extends JsonObj {
+case class TraceContent(id: Array[Byte], applicationName: String, entityId: String, category: String, info: String, clientDate: DateTime, sign: Boolean, horodate: Boolean, user: User, data: scala.collection.immutable.TreeMap[String, String], date: DateTime = null) extends JsonObj {
 }
 
 /**
@@ -44,6 +45,11 @@ case class TraceContent(id: Array[Byte], applicationName: String, entityId: Stri
  */
 object TraceContent {
   def apply(clientTrace: ClientTrace) = {
-    new TraceContent(clientTrace.id, clientTrace.applicationName, clientTrace.entityId, clientTrace.category, clientTrace.info, clientTrace.clientDate, clientTrace.sign, clientTrace.horodate, clientTrace.user, clientTrace.data, new DateTime())
+    //Build the treemap from the map, because it's something complicated to do with messagepack.
+    val data = clientTrace.data match {
+      case null => null
+      case _ => new TreeMap[String, String]() ++ clientTrace.data
+    }
+    new TraceContent(clientTrace.id, clientTrace.applicationName, clientTrace.entityId, clientTrace.category, clientTrace.info, clientTrace.clientDate, clientTrace.sign, clientTrace.horodate, clientTrace.user, data, new DateTime())
   }
 }

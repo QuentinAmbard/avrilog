@@ -7,7 +7,7 @@ import scala.collection.mutable.Map
 import org.msgpack.template.AbstractTemplate
 import org.msgpack.template.Template
 import org.msgpack.`type`.Value
-//>: String
+
 class MutableMapTemplateTest[K >: String, V >: String](keyTemplate: Template[K], valueTemplate: Template[V]) extends AbstractTemplate[Map[K, V]] {
   def write(pk: Packer, target: Map[K, V], required: Boolean) = {
     if (!(target.isInstanceOf[Map[K, V]])) {

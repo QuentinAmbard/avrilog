@@ -5,6 +5,7 @@ import org.joda.time.DateTime
 import com.avricot.avrilog.serialize._
 import scala.collection.mutable.Map
 import org.msgpack.AvrilogMPack
+import scala.collection.immutable.TreeMap
 
 /**
  * User, built from clients message (compressed with msg pack), embedded in a trace.
