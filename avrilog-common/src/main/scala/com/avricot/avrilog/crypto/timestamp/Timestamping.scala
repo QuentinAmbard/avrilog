@@ -64,11 +64,7 @@ object Timestamping extends Hash {
       val out = conn.getOutputStream()
       out.write(parameters.getBytes(encoding))
       out.flush()
-      val ba = Resource.fromInputStream(conn.getInputStream()).byteArray
-      val writer = new BufferedOutputStream(new FileOutputStream(new File("/home/quentin/jeton.test")));
-      writer.write(ba);
-      writer.close();
-      ba
+      Resource.fromInputStream(conn.getInputStream()).byteArray
     } catch {
       case ioe: IOException => logger.error("can't access to timestamping webservice : ", ioe); null
       case e: Throwable => logger.error("can't timestamp the data : ", e); null
