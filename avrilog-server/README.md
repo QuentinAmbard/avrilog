@@ -4,7 +4,8 @@ See documentation on <a href="http://www.rabbitmq.com/download.html">http://www.
 We advise to use the last rabbitMQ version configured with HA mode on at least 2 nodes : see <a href="http://www.rabbitmq.com/ha.html">http://www.rabbitmq.com/ha.html</a>
 Configure the server to user rabbitmq on ha mode with :
 
-    "ha-mode":"all"
+Add a ha polity on the avrilog-trace queue : "ha-mode":"all"
+Check http://www.rabbitmq.com/ha.html to see how to declare a ha queue (bottom)
 
 Web interface migth be installed to control queue status, users access etc.  see <a href="http://www.rabbitmq.com/management.html">http://www.rabbitmq.com/management.html</a>.
 
@@ -28,7 +29,7 @@ Override the default configuration with your values if needed :
     	    exclusive = false
     	    //If set, the queue is deleted when all consumers have finished using it
     	    autodelete = false
-    	    //ha parameters
+    	    //ha parameters /!\ WARNING : with rabbitmq > 3.0, this isn't used anymore. Check http://www.rabbitmq.com/ha.html to see how to declare a ha queue (bottom)
     	    ha-mode = "all"
     	    ha-params = ""
     	}

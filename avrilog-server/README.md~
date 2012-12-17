@@ -28,7 +28,7 @@ Override the default configuration with your values if needed :
     	    exclusive = false
     	    //If set, the queue is deleted when all consumers have finished using it
     	    autodelete = false
-    	    //ha parameters
+    	    //ha parameters /!\ WARNING : with rabbitmq > 3.0, this isn't used anymore. Check http://www.rabbitmq.com/ha.html to see how to declare a ha queue (bottom)
     	    ha-mode = "all"
     	    ha-params = ""
     	}
@@ -199,11 +199,19 @@ more info here : http://blog.didierstevens.com/2008/12/30/howto-make-your-own-ce
 
 ####Generating you own timestamp certificate file :
 
-    openssl genrsa -out tsaroot.key 4096 -config openssl.cnf
-    openssl req -new -x509 -days 1826 -key tsaroot.key -out tsaroot.crt -config openssl.cnf
+generate your root certificate (or re-use the last if you have it)
 
-    openssl genrsa -des3 -out tsa.key 4096 -config openssl.cnf
-    openssl req -new -key tsa.key -out tsa.csr -config openssl.cnf
-    openssl x509 -req -days 730 -in tsa.csr -CA tsaroot.crt -CAkey tsaroot.key -set_serial 01 -out tsa.crt
+    openssl genrsa -out tsaroot.key 4096
+    openssl req -new -x509 -days 1826 -key tsaroot.key -out tsaroot.crt
+
+Adding the timestamping extendedKeyUsage in the openssl.cnf with a [v3_tsa] and using the  -config openssl.cnf -extensions v3_tsa
+create a file extKey.cnf with the extendedKeyUsage inside
+
+    vim extKey.cnf
+    extendedKeyUsage = critical,timeStamping
+
+    openssl genrsa -des3 -out tsa.key 4096
+    openssl req -new -key tsa.key -out tsa.csr
+    openssl x509 -req -days 730 -in tsa.csr -CA tsaroot.crt -CAkey tsaroot.key -set_serial 01 -out tsa.crt -extfile extKey.cnf
     openssl pkcs12 -export -out tsa.p12 -inkey tsa.key -in tsa.crt -chain -CAfile tsaroot.crt
 

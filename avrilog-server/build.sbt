@@ -20,7 +20,7 @@ resolvers ++= Seq(
 seq(com.github.retronym.SbtOneJar.oneJarSettings: _*)
 
 libraryDependencies ++= Seq(
-	"com.rabbitmq" % "amqp-client" % "3.0.0"  ,
+	"com.rabbitmq" % "amqp-client" % "3.0.1"  ,
 	"com.typesafe.akka" % "akka-slf4j" % "2.0.3"  ,
 	"com.typesafe.akka" % "akka-actor" % "2.0.3"  ,
 	"commons-codec" % "commons-codec" % "1.7"  ,
