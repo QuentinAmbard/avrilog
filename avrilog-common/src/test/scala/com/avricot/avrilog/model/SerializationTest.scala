@@ -24,7 +24,7 @@ class SerializationTest {
 
   @Test
   def testSerialization() = {
-    val user = User("userId", "firstname", "lastname", "email", "groupId", "groupName", "ip")
+    val user = User("userId", "firstnéèà", "lastname", "email", "groupId", "groupName", "ip")
     val d1 = new DateTime(15654564L)
     val trace = new ClientTrace(Array[Byte](12), null, null, "category", "info", d1, false, false, user, Map[String, String]("a" -> "aqsd")) //
     val b = trace.serialize
@@ -33,7 +33,7 @@ class SerializationTest {
     Assert.assertEquals(15654564L, newTrace.clientDate.getMillis())
     Assert.assertEquals("aqsd", newTrace.data.get("a").get)
     Assert.assertEquals("userId", newTrace.user.id)
-    Assert.assertEquals("firstname", newTrace.user.firstname)
+    Assert.assertEquals("firstnéèà", newTrace.user.firstname)
     Assert.assertEquals("lastname", newTrace.user.lastname)
     Assert.assertEquals("email", newTrace.user.email)
     Assert.assertEquals("groupId", newTrace.user.groupId)

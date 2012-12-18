@@ -25,7 +25,7 @@ class TraceConsumer {
     try {
       val clientTrace = AvrilogMPack.read[ClientTrace](msg.body);
       val traceContent = TraceContent(clientTrace)
-      val traceContentBytes = traceContent.toJson.getBytes()
+      val traceContentBytes = traceContent.toJson.getBytes("UTF-8")
       if (Trace.exists(traceContent.id)) {
         logger.error("Trace {} is already defined. This might be only happen if you restart your server after a crash : data is saved but acks have not reached the rabbitmq server. trace skipped", traceContent.toJson)
       } else {
