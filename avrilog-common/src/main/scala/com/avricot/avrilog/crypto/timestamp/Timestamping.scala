@@ -53,6 +53,7 @@ object Timestamping extends Hash {
     try {
       val hash = getHash(b, algo)
       val parameters = interpolate(rawParams, Map("hash" -> hash))
+      logger.debug("call to remote timestamping with parameters {}", parameters)
       val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection]
       conn.setDoOutput(true)
       conn.setDoInput(true)
