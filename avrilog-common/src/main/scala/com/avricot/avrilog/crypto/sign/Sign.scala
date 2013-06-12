@@ -136,16 +136,19 @@ object Sign extends Hash {
       val certIt = certStore.getMatches(signer.getSID()).iterator()
       val signerInfoVerifier = certIt.hasNext() match {
         case true => new JcaSimpleSignerInfoVerifierBuilder().setProvider(providerName).build(certIt.next().asInstanceOf[X509CertificateHolder])
-        case false => new JcaSimpleSignerInfoVerifierBuilder().setProvider(providerName).build(signKeyStore.cert)
+        case i if i == false && signer.getSID().getSerialNumber() == signKeyStore.cert.getSerialNumber() => new JcaSimpleSignerInfoVerifierBuilder().setProvider(providerName).build(signKeyStore.cert)
+        case _ => logger.warn("can't find any certificate included in sign. Doesn't match provided cert either. Won't check the certificate integrity"); null
       }
-      try {
-        if (!signer.verify(signerInfoVerifier)) {
-          logger.trace("signer isn't verified")
-          return VerificationInfo.getKo("Signer certificate info isn't verified.")
+      if (signerInfoVerifier != null) {
+        try {
+          if (!signer.verify(signerInfoVerifier)) {
+            logger.trace("signer isn't verified")
+            return VerificationInfo.getKo("Signer certificate info isn't verified.")
+          }
+          logger.trace("sign ok, digest match.")
+        } catch {
+          case e: CMSSignerDigestMismatchException => logger.trace("Signed digest doesn't match"); return VerificationInfo.getKo("Signed digest doesn't match : " + e.getMessage())
         }
-        logger.trace("sign ok, digest match.")
-      } catch {
-        case e: CMSSignerDigestMismatchException => logger.trace("Signed digest doesn't match"); return VerificationInfo.getKo("Signed digest doesn't match : " + e.getMessage())
       }
       //Check timestamp data.
       val attrs = signer.getUnsignedAttributes()
@@ -164,7 +167,7 @@ object Sign extends Hash {
           val tsaSignerInfoVerifier = tsaCertIt.hasNext() match {
             case true => new JcaSimpleSignerInfoVerifierBuilder().setProvider(providerName).build(tsaCertIt.next().asInstanceOf[X509CertificateHolder])
             case i if i == false && tto.getSID().getSerialNumber() == timestampKeyStore.cert.getSerialNumber() => new JcaSimpleSignerInfoVerifierBuilder().setProvider(providerName).build(timestampKeyStore.cert)
-            case _ => logger.trace("can't find any certificate included in timestamp. Won't check the certificate integrity"); null
+            case _ => logger.debug("can't find any certificate included in timestamp. Won't check the certificate integrity"); null
           }
           if (tsaSignerInfoVerifier != null) {
             try {

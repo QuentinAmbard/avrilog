@@ -28,6 +28,7 @@ class TraceConsumer {
       val traceContentBytes = traceContent.toJson.getBytes("UTF-8")
       if (Trace.exists(traceContent.id)) {
         logger.error("Trace {} is already defined. This might be only happen if you restart your server after a crash : data is saved but acks have not reached the rabbitmq server. trace skipped", traceContent.toJson)
+        sendAck(msg)
       } else {
         try {
           val trace = clientTrace match {
@@ -40,13 +41,7 @@ class TraceConsumer {
             logger.debug(trace.toJson)
             Trace.save(trace)
             //One it's saved, send the ack to rabbitmq.
-            if (!RabbitMQConfig.Trace.autoAck) {
-              try {
-                msg.sendAck();
-              } catch {
-                case e: IOException => throw new ConsumerException("error trying to ack the msg. rabbitMQ is probably down, or channel has been closed after a parallel ConsumerException.", e)
-              }
-            }
+            sendAck(msg)
           } catch {
             case e: Throwable => throw new ConsumerException("error while trying to save the trace in db. Trace content : " + trace.toJson, e)
           }
@@ -58,6 +53,17 @@ class TraceConsumer {
       case e: ConsumerException => throw e
       case e: IOException => throw new ConsumerException("IO exception. Your incoming message might not verify the protocol (field name much match to read trace using messagePack). body: " + msg.body + ", delivery Tag: " + msg.deliveryTag, e)
       case e: Throwable => throw new ConsumerException("Unknown exception.", e)
+    }
+  }
+
+  def sendAck(msg: Message): Unit = {
+    //One it's saved, send the ack to rabbitmq.
+    if (!RabbitMQConfig.Trace.autoAck) {
+      try {
+        msg.sendAck();
+      } catch {
+        case e: IOException => throw new ConsumerException("error trying to ack the msg. rabbitMQ is probably down, or channel has been closed after a parallel ConsumerException.", e)
+      }
     }
   }
   val system = ActorSystem()

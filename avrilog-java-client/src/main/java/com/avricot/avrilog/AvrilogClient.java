@@ -141,4 +141,19 @@ public class AvrilogClient {
             throw new TraceException("can't serialize the trace.", e);
         }
     }
+
+    /**
+     * Close the connection.
+     */
+    public static void closeConnection() {
+        try {
+            if (factory != null) {
+                factory.close();
+                factory = null;
+            }
+        } catch (IOException e) {
+            LOG.debug("IO error closing the connection", e);
+            throw new RabbitMQException("IO error closing the connection", e);
+        }
+    }
 }

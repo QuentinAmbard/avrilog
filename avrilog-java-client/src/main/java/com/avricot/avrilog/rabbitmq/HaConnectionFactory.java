@@ -34,7 +34,7 @@ import com.rabbitmq.client.ShutdownListener;
 import com.rabbitmq.client.ShutdownSignalException;
 
 /**
- * 
+ *
  *
  */
 public class HaConnectionFactory extends ConnectionFactory {
@@ -80,7 +80,9 @@ public class HaConnectionFactory extends ConnectionFactory {
                 }
 
             }
-            reconnect();
+            if (!closed.get()) {
+                reconnect();
+            }
         }
 
     }
@@ -95,7 +97,7 @@ public class HaConnectionFactory extends ConnectionFactory {
 
             // TODO: Add max reconnection attempts
             boolean connected = false;
-            while (!connected) {
+            while (!connected && !closed.get()) {
                 try {
                     Thread.sleep(reconnectionDelay);
                 } catch (InterruptedException ie) {
@@ -107,12 +109,14 @@ public class HaConnectionFactory extends ConnectionFactory {
     }
 
     public static final Map<Boolean, ThreadLocal<Channel>> confirmedChannelThreadLocal = new HashMap<Boolean, ThreadLocal<Channel>>();
+
     static {
         confirmedChannelThreadLocal.put(true, new ThreadLocal<Channel>());
         confirmedChannelThreadLocal.put(false, new ThreadLocal<Channel>());
     }
 
     private final AtomicBoolean reconnectionInProgress = new AtomicBoolean(false);
+    private final AtomicBoolean closed = new AtomicBoolean(true);
     private long reconnectionDelay = 5000;
     private Connection connection;
 
@@ -126,10 +130,14 @@ public class HaConnectionFactory extends ConnectionFactory {
      * Try to reconnect, start a ReconnectionTask, no
      */
     private void reconnect() {
-        boolean inprogress = reconnectionInProgress.getAndSet(true);
-        // No reconnection in progress, init a new one.
-        if (!inprogress) {
-            new ReconnectionTask().start();
+        if (closed.get()) {
+            LOG.info("connection closed, won't reconnect");
+        } else {
+            boolean inprogress = reconnectionInProgress.getAndSet(true);
+            // No reconnection in progress, init a new one.
+            if (!inprogress) {
+                new ReconnectionTask().start();
+            }
         }
     }
 
@@ -137,6 +145,7 @@ public class HaConnectionFactory extends ConnectionFactory {
      * Init a new connection to the database.
      */
     public void initConnection() {
+        closed.set(false);
         boolean inprogress = reconnectionInProgress.getAndSet(true);
         // No reconnection in progress, init a new one.
         if (!inprogress) {
@@ -146,6 +155,9 @@ public class HaConnectionFactory extends ConnectionFactory {
         }
     }
 
+    /**
+     * Try to init a new connection. Return false if the connection fail.
+     */
     private boolean tryToConnect() {
         try {
             if (addresses == null || addresses.length == 0) {
@@ -178,11 +190,9 @@ public class HaConnectionFactory extends ConnectionFactory {
 
     /**
      * Create a new {@link Channel} from the current connection.
-     * 
-     * @param confirm
-     *            true if the channel is selected as confirmed (so that we can
-     *            wait brocker ack)
-     * 
+     *
+     * @param confirm true if the channel is selected as confirmed (so that we can
+     *                wait brocker ack)
      */
     public Channel createChannel(final boolean confirm) throws RabbitMQException {
         if (reconnectionInProgress.get()) {
@@ -206,10 +216,9 @@ public class HaConnectionFactory extends ConnectionFactory {
     /**
      * Get a channel, try to get one from the current thread, if not create a
      * new one.
-     * 
-     * @param confirm
-     *            true if the channel is selected as confirmed (so that we can
-     *            wait brocker ack)
+     *
+     * @param confirm true if the channel is selected as confirmed (so that we can
+     *                wait brocker ack)
      */
     public Channel getLocalThreadChannel(final boolean confirm) throws RabbitMQException {
         if (reconnectionInProgress.get()) {
@@ -232,6 +241,12 @@ public class HaConnectionFactory extends ConnectionFactory {
 
     public void setReconnectionDelay(final long reconnectionDelay) {
         this.reconnectionDelay = reconnectionDelay;
+    }
+
+    public void close() throws IOException {
+        LOG.info("closing rabbitmq connection...");
+        closed.set(true);
+        connection.close();
     }
 
 }

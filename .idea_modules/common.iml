@@ -1,0 +1,118 @@
+<module version="4" type="JAVA_MODULE">
+  <component name="FacetManager">
+    <facet name="Scala" type="scala">
+      <configuration>
+        <option name="compilerLibraryLevel" value="Project"></option>
+        <option name="compilerLibraryName" value="SBT: scala:2.9.1"></option>
+        <option name="languageLevel" value="Scala 2.9"></option>
+        <option name="fsc" value="true"></option>
+        <option name="compilerOptions" value=""></option>
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/../avrilog-common/target/scala-2.9.1/classes"></output>
+    <output-test url="file://$MODULE_DIR$/../avrilog-common/target/scala-2.9.1/test-classes"></output-test>
+    <exclude-output></exclude-output>
+    <content url="file://$MODULE_DIR$/../avrilog-common">
+      <sourceFolder url="file://$MODULE_DIR$/../avrilog-common/src/main/scala" isTestSource="false" ></sourceFolder>
+      <sourceFolder url="file://$MODULE_DIR$/../avrilog-common/src/main/java" isTestSource="false" ></sourceFolder>
+      <sourceFolder url="file://$MODULE_DIR$/../avrilog-common/src/main/resources" isTestSource="false" ></sourceFolder>
+      <sourceFolder url="file://$MODULE_DIR$/../avrilog-common/src/test/scala" isTestSource="true" ></sourceFolder>
+      <sourceFolder url="file://$MODULE_DIR$/../avrilog-common/src/test/java" isTestSource="true" ></sourceFolder>
+      <sourceFolder url="file://$MODULE_DIR$/../avrilog-common/src/test/resources" isTestSource="true" ></sourceFolder>
+      <excludeFolder url="file://$MODULE_DIR$/../avrilog-common/target"></excludeFolder>
+    </content>
+    <orderEntry type="inheritedJdk"></orderEntry>
+    <orderEntry type="sourceFolder" forTests="false"></orderEntry>
+    <orderEntry level="project" name="SBT: org.scala-lang:scala-library:2.9.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.apache.hbase:hbase:0.94.0" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: commons-cli:commons-cli:1.2" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: commons-configuration:commons-configuration:1.6" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: commons-collections:commons-collections:3.2.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: commons-logging:commons-logging:1.1.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: commons-digester:commons-digester:1.8" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: commons-beanutils:commons-beanutils:1.7.0" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: commons-beanutils:commons-beanutils-core:1.8.0" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: com.github.stephenc.high-scale-lib:high-scale-lib:1.1.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: commons-codec:commons-codec:1.4" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: commons-httpclient:commons-httpclient:3.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: commons-io:commons-io:2.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: commons-lang:commons-lang:2.5" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: log4j:log4j:1.2.16" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.apache.avro:avro:1.5.3" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.xerial.snappy:snappy-java:1.0.3.2" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.apache.avro:avro-ipc:1.5.3" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.mortbay.jetty:jetty:6.1.26" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.mortbay.jetty:jetty-util:6.1.26" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.mortbay.jetty:servlet-api:2.5-20081211" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.jboss.netty:netty:3.2.4.Final" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.apache.velocity:velocity:1.7" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.apache.zookeeper:zookeeper:3.4.3" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.slf4j:slf4j-log4j12:1.6.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.apache.thrift:libthrift:0.8.0" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.apache.httpcomponents:httpclient:4.1.2" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.apache.httpcomponents:httpcore:4.1.3" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.mortbay.jetty:jsp-2.1:6.1.14" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.eclipse.jdt:core:3.1.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.mortbay.jetty:jsp-api-2.1:6.1.14" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.mortbay.jetty:servlet-api-2.5:6.1.14" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.jamon:jamon-runtime:2.3.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: com.google.protobuf:protobuf-java:2.4.0a" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.codehaus.jettison:jettison:1.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: stax:stax-api:1.0.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: javax.xml.stream:stax-api:1.0-2" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: javax.activation:activation:1.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: tomcat:jasper-compiler:5.5.23" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: tomcat:jasper-runtime:5.5.23" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: commons-el:commons-el:1.0" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.apache.hadoop:hadoop-common:0.23.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.apache.commons:commons-math:2.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: xmlenc:xmlenc:0.52" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: commons-net:commons-net:1.4.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: oro:oro:2.0.8" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: javax.servlet:servlet-api:2.5" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: asm:asm:3.2" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: com.sun.jersey:jersey-core:1.8" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: com.sun.jersey:jersey-json:1.8" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: com.sun.xml.bind:jaxb-impl:2.2.3-1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: javax.xml.bind:jaxb-api:2.2.2" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.codehaus.jackson:jackson-jaxrs:1.7.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.codehaus.jackson:jackson-xc:1.7.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: com.sun.jersey:jersey-server:1.8" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: javax.servlet.jsp:jsp-api:2.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: commons-logging:commons-logging-api:1.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: net.java.dev.jets3t:jets3t:0.6.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: hsqldb:hsqldb:1.8.0.7" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.codehaus.jackson:jackson-mapper-asl:1.8.8" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.codehaus.jackson:jackson-core-asl:1.8.8" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.aspectj:aspectjrt:1.6.5" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: net.sf.kosmosfs:kfs:0.3" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.apache.hadoop:hadoop-auth:0.23.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: joda-time:joda-time:2.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.joda:joda-convert:1.2" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.bouncycastle:bcprov-jdk16:1.46" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.bouncycastle:bctsp-jdk16:1.46" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.bouncycastle:bcmail-jdk16:1.46" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: com.github.scala-incubator.io:scala-io-core_2.9.1:0.4.1-seq" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: com.github.jsuereth.scala-arm:scala-arm_2.9.1:1.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: com.fasterxml.jackson.module:jackson-module-scala:2.1.2" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: com.fasterxml.jackson.core:jackson-core:2.1.0" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: com.fasterxml.jackson.core:jackson-annotations:2.1.0" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: com.fasterxml.jackson.core:jackson-databind:2.1.0" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.scalastuff:scalabeans:0.3" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: com.thoughtworks.paranamer:paranamer:2.5.2" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: com.google.guava:guava:13.0.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: com.typesafe:config:0.6.0" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.msgpack:msgpack-scala_2.9.1:0.6.6" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.msgpack:msgpack:0.6.6" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: com.googlecode.json-simple:json-simple:1.1.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: junit:junit:4.10" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.hamcrest:hamcrest-core:1.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.javassist:javassist:3.16.1-GA" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.scala-lang:scalap:2.9.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.scala-lang:scala-compiler:2.9.1" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: com.avricot:horm_2.9.1:0.3-SNAPSHOT" type="library"></orderEntry>
+    <orderEntry level="project" name="SBT: org.slf4j:slf4j-api:1.6.6" type="library"></orderEntry>
+  </component>
+</module>
