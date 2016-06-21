@@ -1,7 +1,12 @@
-##Avrilog-server and Avrilog-commun are the only working modules. Other modules are for test only.
+##Home-made traceability server.
 
-Avrilog consume rabbitmq traces, sign the traces with custom or remote timestamp certificate and save them to HBASE
+Use scala, akka, rabbitmq,  + bouncy castle for the timestamp implementation.
 
-Signature & Timestamp are done in common project, see Sign.scala
 
-Installation detail with certificate generation are provided README.me of the avrilog-server module.
+*Avrilog-server : consume rabbitmq traces, sign the traces with custom or remote timestamp certificate and save them to HBASE. 
+Installation detail with certificate generation are provided in the README.me of this module.
+
+*Avrilog-common : Signature & Timestamp see Sign.scala  + shared object
+
+*Avrilog-java-client : Used to send raw traces to rabbit-mq from any application
+
