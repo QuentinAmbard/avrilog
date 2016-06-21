@@ -1,6 +1,6 @@
 ##Avrilog server is the only working module. Other modules are for test only.
 
-Avrilog consume rabbitmq traces, sign the traces with custom or remote certificate and save them to HBASE
+Avrilog consume rabbitmq traces, sign the traces with custom or remote timestamp certificate and save them to HBASE
 
 ##RabbitMQ installation
 See documentation on <a href="http://www.rabbitmq.com/download.html">http://www.rabbitmq.com/download.html</a>
